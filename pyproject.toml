@@ -6,12 +6,17 @@ authors = [
     {name = "Hedda G",email = "hedda.gressel@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10,<4.0"
 dependencies = [
-    "pandas (>=2.2.3,<3.0.0)"
+    "langchain (>=0.3.14,<0.4.0)"
 ]
 
+[tool.poetry]
+packages = [
+    { include = "graphrag" },
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
