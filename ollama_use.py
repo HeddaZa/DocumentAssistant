@@ -1,6 +1,5 @@
 import streamlit as st
 from langchain_ollama import OllamaLLM
-from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 
 # Initialize Ollama model

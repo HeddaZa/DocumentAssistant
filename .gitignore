@@ -1,1 +1,8 @@
 data/*
+!data/.gitkeep
+!data/pdfs/
+!data/Pictures/
+data/pdfs/*
+!data/pdfs/.gitkeep
+data/Pictures/*
+!data/Pictures/.gitkeep
