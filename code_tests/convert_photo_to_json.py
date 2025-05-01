@@ -2,7 +2,7 @@ from PIL import Image
 import pytesseract
 import json
 
-image_path = 'data/Pictures/IMG_7789.jpg'
+image_path = "data/Pictures/IMG_7789.jpg"
 
 image = Image.open(image_path)
 
