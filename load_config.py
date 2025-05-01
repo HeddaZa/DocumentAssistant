@@ -1,13 +1,14 @@
+from pathlib import Path
+
 import yaml
 
 
-def load_config():
-    """
-    Load configuration from the YAML file.
+def load_config() -> dict:
+    """Load configuration from the YAML file.
 
     Returns:
         dict: Parsed configuration as a dictionary.
     """
-    with open("config.yaml", "r") as file:
+    with Path("config.yaml").open("w") as file:
         config = yaml.safe_load(file)
     return config
