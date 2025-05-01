@@ -1,0 +1,8 @@
+paths:
+  data_dir: data
+  pdfs_dir: ${data_dir}/pdfs
+  pictures_dir: ${data_dir}/Pictures
+
+ollama:
+ name: gemma
+ model: gemma

@@ -6,3 +6,4 @@ data/pdfs/*
 !data/pdfs/.gitkeep
 data/Pictures/*
 !data/Pictures/.gitkeep
+.DS_Store
