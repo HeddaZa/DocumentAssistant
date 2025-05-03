@@ -7,3 +7,6 @@ data/pdfs/*
 data/Pictures/*
 !data/Pictures/.gitkeep
 .DS_Store
+.env
+__pycache__/
+*.log
