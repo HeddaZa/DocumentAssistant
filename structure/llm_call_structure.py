@@ -13,7 +13,7 @@ class DocumentTypeEnum(str, Enum):
 
 
 class Logs(BaseModel):
-    """Pydantic model for representing logs."""
+    """Pydantic model for representing a single log entry."""
 
     log: str
     date: str
@@ -27,4 +27,4 @@ class DocumentType(BaseModel):
     date: str
     description: str
     notes: str
-    logs: Logs
+    logs: list[Logs]  # Changed from single Logs to List[Logs]
