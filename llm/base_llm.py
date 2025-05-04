@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from utils.logger import setup_logger
 
 # Set up a logger for the LLM module
-logger = setup_logger(name="BaseLLM")
+logger = setup_logger(name="BaseLLM", log_file="logs/base_llm.log")
 
 
 class BaseLLM(ABC):

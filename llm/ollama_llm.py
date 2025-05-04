@@ -7,7 +7,7 @@ from structure.llm_call_structure import DocumentType
 from structure.state import State
 from utils.logger import setup_logger
 
-logger = setup_logger(name="OllamaLLM")
+logger = setup_logger(name="OllamaLLM", log_file="logs/ollama_llm.log")
 
 
 class OllamaLLMCall(BaseLLM):

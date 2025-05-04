@@ -3,7 +3,7 @@ import openai
 from llm.base_llm import BaseLLM
 from utils.logger import setup_logger
 
-logger = setup_logger(name="OpenAILLM")
+logger = setup_logger(name="OpenAILLM", log_file="logs/openai_llm.log")
 
 
 class OpenAILLM(BaseLLM):

@@ -9,7 +9,7 @@ from utils.logger import setup_logger
 
 load_dotenv()
 
-logger = setup_logger(name="MyApp")
+logger = setup_logger(name="MyApp", log_file="logs/app.log")
 
 
 def main() -> str:
@@ -33,3 +33,5 @@ if __name__ == "__main__":
         result=None,
     )
     result = llm.call(state)
+
+    logger.debug("Full result details: %s", result)

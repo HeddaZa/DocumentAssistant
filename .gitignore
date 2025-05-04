@@ -10,3 +10,5 @@ data/Pictures/*
 .env
 __pycache__/
 *.log
+logs/*
+!logs/.gitkeep
