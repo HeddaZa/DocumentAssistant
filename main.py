@@ -34,4 +34,4 @@ if __name__ == "__main__":
     )
     result = llm.call(state)
 
-    logger.debug("Full result details: %s", result)
+    logger.debug("Full result details: {}", result)

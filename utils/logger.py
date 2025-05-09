@@ -1,31 +1,46 @@
-import logging
 import os
 import sys
 
+from loguru import logger
+from loguru._logger import Logger
 
-def setup_logger(name: str, log_file: str = "app.log", default_level: int = logging.INFO) -> logging.Logger:
-    """Sets up a logger with the specified name, log file, and level."""
-    log_level_str = os.getenv("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, default_level)
 
-    logger = logging.getLogger(name)
-    logger.setLevel(log_level)
+def setup_logger(
+    name: str,
+    log_file: str = "app.log",
+) -> Logger:
+    """Sets up a logger with the specified name, log file, and level.
 
-    # Create formatter without the extra field
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    Args:
+        name (str): Name of the logger (used in log messages).
+        log_file (str): Path to the log file.
+        default_level (str): Default logging level (DEBUG, INFO, WARNING, ERROR).
 
-    # Add file handler
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setFormatter(formatter)
-    file_handler.setLevel(log_level)
+    Returns:
+        logger: Configured logger instance.
+    """
+    log_level = os.getenv("LOG_LEVEL").upper()
 
-    # Add console handler
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    console_handler.setLevel(log_level)
+    logger.remove()
 
-    if not logger.handlers:
-        logger.addHandler(file_handler)
-        logger.addHandler(console_handler)
+    logger.add(
+        sys.stdout,
+        format=(
+            "<green>{time:YYYY-MM-DD HH:mm:ss}</green> - "
+            "<level>{level}</level> - "
+            "<cyan>{name}</cyan> - "
+            "<level>{message}</level>"
+        ),
+        filter=lambda record: record["extra"].get("name", "") == name,
+        level=log_level,
+    )
 
-    return logger
+    logger.add(
+        log_file,
+        format="{time:YYYY-MM-DD HH:mm:ss} - {level} - {name} - {message}",
+        filter=lambda record: record["extra"].get("name", "") == name,
+        level=log_level,
+        rotation="10 MB",
+    )
+
+    return logger.bind(name=name)

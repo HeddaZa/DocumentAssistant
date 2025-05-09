@@ -1,30 +1,25 @@
-import openai
+import os
 
-from llm.base_llm import BaseLLM
+from langchain_openai import ChatOpenAI
+
+from llm.chain_llm import ChainLLM
 from utils.logger import setup_logger
 
 logger = setup_logger(name="OpenAILLM", log_file="logs/openai_llm.log")
 
 
-class OpenAILLM(BaseLLM):
+class OpenAILLM(ChainLLM):
     """OpenAI LLM class for interacting with OpenAI models."""
 
-    def __init__(self, api_key: str, model: str):
+    def __init__(self) -> None:
         super().__init__()
-        self.api_key = api_key
-        self.model = model
-        openai.api_key = self.api_key
-        logger.info("OpenAILLM initialized with model: %s", model)
-
-    def call(self, prompt: str) -> str:
-        """Call the OpenAI model with a prompt."""
-        logger.info("Calling OpenAI model '%s' with prompt: %s", self.model, prompt)
-        try:
-            response = openai.Completion.create(engine=self.model, prompt=prompt, max_tokens=100)
-            result = response.choices[0].text.strip()
-            logger.debug("OpenAI response: %s", result)
-        except Exception:
-            logger.exception("Error calling OpenAI API")
-            raise
-        else:
-            return result
+        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.model = os.getenv("OPENAI_MODEL", "gpt-4")
+        if not self.api_key:
+            msg = "OPENAI_API_KEY not found in environment variables"
+            raise ValueError(msg)
+        self.llm = ChatOpenAI(
+            openai_api_key=self.api_key,
+            model_name=self.model,
+        )
+        logger.info("OpenAILLM initialized with model: {}", self.model)
