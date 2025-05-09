@@ -16,7 +16,10 @@ dependencies = [
     "openai (>=1.76.2,<2.0.0)",
     "python-dotenv (>=1.1.0,<2.0.0)",
     "loguru (>=0.7.3,<0.8.0)",
-    "langchain-openai (>=0.3.16,<0.4.0)"
+    "langchain-openai (>=0.3.16,<0.4.0)",
+    "pytest (>=8.3.5,<9.0.0)",
+    "pytest-mock (>=3.14.0,<4.0.0)",
+    "pytest-cov (>=6.1.1,<7.0.0)"
 ]
 
 [tool.poetry]
@@ -37,6 +40,6 @@ select = ["ALL"]
 
 [tool.ruff]
 line-length = 120
-ignore = ["D100", "D107", "ANN204", "D413", "RET504","D401","INP001","PLE1205"]
+ignore = ["D100", "D107", "ANN204", "D413", "RET504","D401","INP001","PLE1205","S101"]
 
 
