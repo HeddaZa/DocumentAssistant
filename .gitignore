@@ -12,3 +12,5 @@ __pycache__/
 *.log
 logs/*
 !logs/.gitkeep
+.ruff_cache/
+.pytest_cache/
