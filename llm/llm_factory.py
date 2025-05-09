@@ -1,25 +1,46 @@
+from typing import ClassVar
+
 from llm.base_llm import BaseLLM
-from llm.ollama_llm import OllamaLLM
+from llm.ollama_llm import OllamaLLMCall
 from llm.openai_llm import OpenAILLM
+from utils.logger import setup_logger
+
+logger = setup_logger(name="LLMFactory", log_file="logs/llm_factory.log")
 
 
 class LLMFactory:
     """Factory class to create LLM instances based on configuration."""
 
-    @staticmethod
-    def create_llm(config: dict) -> BaseLLM:
-        """Create an LLM instance as Factory method based on the config.
+    _llm_classes: ClassVar[dict[str, type[BaseLLM]]] = {
+        "ollama": OllamaLLMCall,
+        "openai": OpenAILLM,
+    }
+
+    @classmethod
+    def create_llm(cls, config: dict) -> BaseLLM:
+        """Create an LLM instance based on the config.
 
         Args:
-            config (dict): Configuration dictionary.
+            config (dict): Configuration dictionary containing LLM settings.
 
         Returns:
             BaseLLM: An instance of a class implementing BaseLLM.
+
+        Raises:
+            ValueError: If the LLM type is not supported.
         """
         llm_type = config["llm"]["type"]
+        llm_class = cls._llm_classes.get(llm_type)
+
+        if not llm_class:
+            msg = f"Unsupported LLM type: {llm_type!r}"
+            logger.error(msg)
+            raise ValueError(msg)
+
         if llm_type == "ollama":
-            return OllamaLLM(model=config["llm"]["model"])
-        if llm_type == "openai":
-            return OpenAILLM(api_key=config["llm"]["api_key"], model=config["llm"]["model"])
-        msg = f"Unsupported LLM type: {llm_type!r}"
-        raise ValueError(msg)
+            llm = llm_class(model=config["llm"]["model"])
+        elif llm_type == "openai":
+            llm = llm_class()
+
+        logger.info("Created LLM instance", extra={"type": llm_type})
+        return llm

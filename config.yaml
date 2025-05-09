@@ -5,4 +5,4 @@ paths:
 
 ollama:
  name: gemma
- model: gemma
+ model: gemma:7b
