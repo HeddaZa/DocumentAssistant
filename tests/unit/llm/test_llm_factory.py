@@ -23,5 +23,5 @@ def test_create_llm_with_invalid_type() -> None:
             "type": "invalid",
         },
     }
-    with pytest.raises(ValueError, match="Invalid LLM type: invalid"):
+    with pytest.raises(ValueError, match="Unsupported LLM type: 'invalid'"):
         LLMFactory.create_llm(config)

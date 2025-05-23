@@ -30,6 +30,7 @@ packages = [
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.2.0"
 ruff = "^0.11.7"
+pytest-mock = "^3.14.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
