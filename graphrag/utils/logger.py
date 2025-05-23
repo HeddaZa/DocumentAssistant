@@ -10,7 +10,7 @@ def setup_logger(
     log_file: str = "app.log",
 ) -> Logger:
     """Sets up a logger with the specified name, log file, and level."""
-    log_level = os.getenv("LOG_LEVEL").upper()
+    log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 
     logger.remove()
 

@@ -6,7 +6,7 @@ from graphrag.structure.state import State
 
 
 @pytest.fixture
-def config() -> dict:
+def config() -> dict[str, dict[str, str]]:
     """Test configuration fixture."""
     return {
         "llm": {
@@ -17,7 +17,7 @@ def config() -> dict:
 
 
 @pytest.mark.integration
-def test_full_llm_pipeline(config: dict) -> None:
+def test_full_llm_pipeline(config: dict[str, dict[str, str]]) -> None:
     """Test the complete LLM pipeline from factory creation to response."""
     llm = LLMFactory.create_llm(config)
 
@@ -40,7 +40,7 @@ def test_full_llm_pipeline(config: dict) -> None:
 
 
 @pytest.mark.integration
-def test_llm_error_handling(config: dict) -> None:
+def test_llm_error_handling(config: dict[str, dict[str, str]]) -> None:
     """Test error handling with invalid input."""
     llm = LLMFactory.create_llm(config)
 
@@ -51,7 +51,7 @@ def test_llm_error_handling(config: dict) -> None:
 
 
 @pytest.mark.integration
-def test_long_input_handling(config: dict) -> None:
+def test_long_input_handling(config: dict[str, dict[str, str]]) -> None:
     """Test handling of longer input texts."""
     llm = LLMFactory.create_llm(config)
 

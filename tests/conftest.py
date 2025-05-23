@@ -10,7 +10,7 @@ def sample_state() -> State:
 
 
 @pytest.fixture
-def mock_config() -> dict:
+def mock_config() -> dict[str, str | dict[str, str]]:
     """Provide a mock configuration dictionary for testing purposes."""
     return {
         "llm": {

@@ -17,7 +17,7 @@ class LLMFactory:
     }
 
     @classmethod
-    def create_llm(cls, config: dict) -> BaseLLM:
+    def create_llm(cls, config: dict[str, str]) -> BaseLLM:
         """Create an LLM instance based on the config."""
         llm_type = config["llm"]["type"]
         llm_class = cls._llm_classes.get(llm_type)
