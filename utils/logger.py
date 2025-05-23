@@ -29,6 +29,7 @@ def setup_logger(
             "<green>{time:YYYY-MM-DD HH:mm:ss}</green> - "
             "<level>{level}</level> - "
             "<cyan>{name}</cyan> - "
+            "<blue>{file}</blue> - "
             "<level>{message}</level>"
         ),
         filter=lambda record: record["extra"].get("name", "") == name,
@@ -37,7 +38,7 @@ def setup_logger(
 
     logger.add(
         log_file,
-        format="{time:YYYY-MM-DD HH:mm:ss} - {level} - {name} - {message}",
+        format="{time:YYYY-MM-DD HH:mm:ss} - {level} - {name} - {file} - {message}",
         filter=lambda record: record["extra"].get("name", "") == name,
         level=log_level,
         rotation="10 MB",
