@@ -23,14 +23,21 @@ dependencies = [
 ]
 
 [tool.poetry]
+name = "graphrag"
+version = "0.1.0"
+description = ""
+authors = ["Hedda G <hedda.gressel@gmail.com>"]
+readme = "README.md"
 packages = [
-    { include = "graphrag" },
+    { include = "graphrag" }
 ]
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.2.0"
-ruff = "^0.11.7"
-pytest-mock = "^3.14.0"
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+ruff = "^0.3.0"
+mypy = "^1.8.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -40,7 +47,18 @@ build-backend = "poetry.core.masonry.api"
 select = ["ALL"]
 
 [tool.ruff]
-line-length = 120
-ignore = ["D100", "D107", "ANN204", "D413", "RET504","D401","INP001","PLE1205","S101"]
+line-length = 88
+target-version = "py312"
+ignore = ["D100", "D107", "ANN204", "D413", "RET504","D401","INP001","PLE1205","S101","D104"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=. --cov-report=xml"
 
 

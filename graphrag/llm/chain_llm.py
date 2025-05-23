@@ -1,6 +1,5 @@
 from langchain.output_parsers import OutputFixingParser, PydanticOutputParser
 from langchain.prompts import PromptTemplate
-
 from llm.base_llm import BaseLLM
 from structure.llm_call_structure import DocumentType
 from structure.state import State
@@ -31,7 +30,9 @@ class ChainLLM(BaseLLM):
         prompt = PromptTemplate(
             template=prompt + "\n{format_instructions}",
             input_variables=[],
-            partial_variables={"format_instructions": output_parser.get_format_instructions()},
+            partial_variables={
+                "format_instructions": output_parser.get_format_instructions(),
+            },
         )
         self.chain = prompt | self.llm | output_parser
         logger.debug("Chain created with prompt", extra={"prompt": prompt})

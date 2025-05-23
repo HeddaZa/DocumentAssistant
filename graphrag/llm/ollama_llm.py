@@ -1,5 +1,4 @@
 from langchain_ollama import OllamaLLM
-
 from llm.chain_llm import ChainLLM
 from utils.logger import setup_logger
 

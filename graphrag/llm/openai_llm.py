@@ -1,7 +1,6 @@
 import os
 
 from langchain_openai import ChatOpenAI
-
 from llm.chain_llm import ChainLLM
 from utils.logger import setup_logger
 

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class State(BaseModel):
-    """Pydantic model for representing the state with a prompt, input text, and result."""
+    """Pydantic model for representing the state."""
 
     prompt: str
     text: str

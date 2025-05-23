@@ -1,3 +1,4 @@
+# Data and logs
 data/*
 !data/.gitkeep
 !data/pdfs/
@@ -6,11 +7,42 @@ data/pdfs/*
 !data/pdfs/.gitkeep
 data/Pictures/*
 !data/Pictures/.gitkeep
-.DS_Store
-.env
-__pycache__/
-*.log
 logs/*
 !logs/.gitkeep
-.ruff_cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.python-version
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.env
+.venv/
+env/
+venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Testing and linting
+.coverage
+coverage.xml
+coverage/
+htmlcov/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Misc
+*.log
