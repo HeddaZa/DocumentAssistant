@@ -1,4 +1,5 @@
-"""LLM package for document processing and analysis.
+"""
+LLM package for document processing and analysis.
 
 This package provides functionality for:
 - Initializing and managing Large Language Models

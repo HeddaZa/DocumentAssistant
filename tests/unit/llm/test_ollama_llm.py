@@ -2,8 +2,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from llm.ollama_llm import OllamaLLMCall
-from structure.state import State
+from graphrag.llm.ollama_llm import OllamaLLMCall
+from graphrag.structure.state import State
 
 
 @pytest.fixture
@@ -40,7 +40,10 @@ def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) ->
 
     result = mock_ollama_llm.call(sample_state)
 
-    mock_ollama_llm.chain.invoke.assert_called_once_with({"text": sample_state.text}, return_only_outputs=True)
+    mock_ollama_llm.chain.invoke.assert_called_once_with(
+        {"text": sample_state.text},
+        return_only_outputs=True,
+    )
     assert result == {"type": "test", "content": "result"}
 
 

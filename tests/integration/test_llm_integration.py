@@ -1,8 +1,8 @@
 import pytest
 
-from llm.llm_factory import LLMFactory
-from structure.llm_call_structure import DocumentType
-from structure.state import State
+from graphrag.llm.llm_factory import LLMFactory
+from graphrag.structure.llm_call_structure import DocumentType
+from graphrag.structure.state import State
 
 
 @pytest.fixture

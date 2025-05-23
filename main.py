@@ -1,10 +1,10 @@
 from dotenv import load_dotenv
 
-from llm.llm_factory import LLMFactory
+from graphrag.llm.llm_factory import LLMFactory
+from graphrag.prompts.prompt_collection import CATEGORISATION_PROMPT
+from graphrag.structure.state import State
+from graphrag.utils.logger import setup_logger
 from load_config import load_config
-from prompts.prompt_collection import CATEGORISATION_PROMPT
-from structure.state import State
-from utils.logger import setup_logger
 
 load_dotenv()
 
@@ -34,5 +34,7 @@ def main(text: str) -> None:
 
 
 if __name__ == "__main__":
-    text = ("This is a test text for categorization. This is a receipt about 100EUR for a doctor.",)
+    text = """
+This is a test text for categorization. This is a receipt about 100EUR for a doctor.
+"""
     main(text=text)

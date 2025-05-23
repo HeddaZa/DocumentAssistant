@@ -9,16 +9,7 @@ def setup_logger(
     name: str,
     log_file: str = "app.log",
 ) -> Logger:
-    """Sets up a logger with the specified name, log file, and level.
-
-    Args:
-        name (str): Name of the logger (used in log messages).
-        log_file (str): Path to the log file.
-        default_level (str): Default logging level (DEBUG, INFO, WARNING, ERROR).
-
-    Returns:
-        logger: Configured logger instance.
-    """
+    """Sets up a logger with the specified name, log file, and level."""
     log_level = os.getenv("LOG_LEVEL").upper()
 
     logger.remove()

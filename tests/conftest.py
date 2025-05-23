@@ -1,6 +1,6 @@
 import pytest
 
-from structure.state import State
+from graphrag.structure.state import State
 
 
 @pytest.fixture

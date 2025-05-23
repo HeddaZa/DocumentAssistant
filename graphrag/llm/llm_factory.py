@@ -18,17 +18,7 @@ class LLMFactory:
 
     @classmethod
     def create_llm(cls, config: dict) -> BaseLLM:
-        """Create an LLM instance based on the config.
-
-        Args:
-            config (dict): Configuration dictionary containing LLM settings.
-
-        Returns:
-            BaseLLM: An instance of a class implementing BaseLLM.
-
-        Raises:
-            ValueError: If the LLM type is not supported.
-        """
+        """Create an LLM instance based on the config."""
         llm_type = config["llm"]["type"]
         llm_class = cls._llm_classes.get(llm_type)
 
