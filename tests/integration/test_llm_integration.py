@@ -35,7 +35,7 @@ def test_full_llm_pipeline(config: dict) -> None:
     assert hasattr(result, "description")
 
     assert result.type is not None
-    assert isinstance(result.price, (int, float))
+    assert isinstance(result.price, int | float)
     assert isinstance(result.description, str)
 
 

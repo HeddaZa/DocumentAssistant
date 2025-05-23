@@ -1,8 +1,8 @@
 import pytest
 from pytest_mock import MockFixture
 
-from llm.chain_llm import ChainLLM
-from structure.state import State
+from graphrag.llm.chain_llm import ChainLLM
+from graphrag.structure.state import State
 
 
 def test_chain_creation() -> None:

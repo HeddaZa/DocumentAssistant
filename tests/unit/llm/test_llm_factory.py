@@ -1,7 +1,7 @@
 import pytest
 
-from llm.llm_factory import LLMFactory
-from llm.ollama_llm import OllamaLLMCall
+from graphrag.llm.llm_factory import LLMFactory
+from graphrag.llm.ollama_llm import OllamaLLMCall
 
 
 def test_create_llm_with_ollama() -> None:
