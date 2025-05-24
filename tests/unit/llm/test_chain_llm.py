@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 from pytest_mock import MockFixture
 
@@ -20,25 +22,36 @@ def mock_llm(mocker: MockFixture) -> ChainLLM:
     return llm
 
 
-def test_call_creates_chain(mock_llm: ChainLLM) -> None:
+def test_call_creates_chain(mock_llm: ChainLLM, mocker: MockFixture) -> None:
     """Test that calling the LLM creates a chain if it doesn't exist."""
-    mock_response = """
-    {
-        "type": "receipt_from_doctor",
-        "price": 100.0,
-        "date": "2024-05-23",
-        "description": "Doctor visit",
-        "notes": "Regular checkup",
-        "logs": [
-            {
-                "log": "Document processed",
-                "date": "2024-05-23"
-            }
-        ]
-    }
-    """
-    mock_llm.llm.invoke.return_value = mock_response
+    from graphrag.structure.llm_call_structure import (
+        DocumentType,
+        DocumentTypeEnum,
+        Logs,
+    )
+
+    mock_response = DocumentType(
+        type=DocumentTypeEnum.DOCTOR_RECEIPT,
+        price=100.0,
+        date="2024-05-23",
+        description="Doctor visit",
+        notes="Regular checkup",
+        logs=[Logs(log="Document processed", date="2024-05-23")],
+    )
+
+    mock_chain = Mock()
+    mock_chain.invoke.return_value = mock_response
+
+    mocker.patch.object(mock_llm, "create_chain")
+    mock_llm.chain = mock_chain
 
     state = State(prompt="test prompt", text="test text", result=None)
-    mock_llm.call(state)
-    assert mock_llm.chain is not None
+    result = mock_llm.call(state)
+
+    mock_chain.invoke.assert_called_once_with(
+        {"text": state.text},
+        return_only_outputs=True,
+    )
+    assert isinstance(result, DocumentType)
+    assert result.type == DocumentTypeEnum.DOCTOR_RECEIPT
+    assert result.description == "Doctor visit"
