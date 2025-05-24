@@ -1,7 +1,7 @@
 import os
 
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
-from pydantic import SecretStr  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
+from pydantic import SecretStr
 
 from graphrag.llm.chain_llm import ChainLLM
 from graphrag.utils.logger import setup_logger

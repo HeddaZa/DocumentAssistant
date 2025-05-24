@@ -14,5 +14,13 @@ repos:
           - types-requests
           - pytest>=8.3.5
           - pytest-mock>=3.14.0
-        args: [--config-file=mypy.ini]
+          - types-pillow
+          - pydantic
+          - loguru
+          - langchain
+          - langchain-ollama
+          - langchain-openai
+          - python-dotenv
+          - pytesseract
+        args: [--config-file=mypy.ini, --ignore-missing-imports]
         exclude: ^(docs/|examples/)

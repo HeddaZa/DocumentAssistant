@@ -32,7 +32,8 @@ jobs:
       run: poetry run ruff check .
       
     - name: Run type checking
-      run: poetry run mypy .
+      run: |
+        poetry run mypy . --config-file=mypy.ini --python-version 3.12
     
     - name: Run tests with coverage
       run: poetry run pytest -v --cov=. --cov-report=xml

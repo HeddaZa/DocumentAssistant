@@ -7,21 +7,6 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
-dependencies = [
-    "langchain (>=0.3.14,<0.4.0)",
-    "streamlit (>=1.43.2,<2.0.0)",
-    "langchain-community (>=0.3.19,<0.4.0)",
-    "langchain-ollama (>=0.2.3,<0.3.0)",
-    "pytesseract (>=0.3.13,<0.4.0)",
-    "openai (>=1.76.2,<2.0.0)",
-    "python-dotenv (>=1.1.0,<2.0.0)",
-    "loguru (>=0.7.3,<0.8.0)",
-    "langchain-openai (>=0.3.16,<0.4.0)",
-    "pytest (>=8.3.5,<9.0.0)",
-    "pytest-mock (>=3.14.0,<4.0.0)",
-    "pytest-cov (>=6.1.1,<7.0.0)",
-    "types-pyyaml (>=6.0.12.20250516,<7.0.0.0)"
-]
 
 [tool.poetry]
 name = "graphrag"
@@ -33,13 +18,26 @@ packages = [
     { include = "graphrag" }
 ]
 
+[tool.poetry.dependencies]
+python = "^3.12"
+langchain = ">=0.3.14,<0.4.0"
+langchain-community = ">=0.3.19,<0.4.0"
+langchain-ollama = ">=0.2.3,<0.3.0"
+langchain-openai = ">=0.3.16,<0.4.0"
+pytesseract = ">=0.3.13,<0.4.0"
+openai = ">=1.76.2,<2.0.0"
+python-dotenv = ">=1.1.0,<2.0.0"
+loguru = ">=0.7.3,<0.8.0"
+pydantic = "^2.5.3"
+
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^4.2.0"
-pytest = "^8.3.5"
-pytest-cov = "^6.1.1"
-ruff = "^0.3.0"
 mypy = "^1.8.0"
-pytest-mypy-plugins = "^3.2.0"
+types-PyYAML = ">=6.0.12.20250516,<7.0.0"
+types-requests = "*"
+pytest = ">=8.3.5,<9.0.0"
+pytest-mock = ">=3.14.0,<4.0.0"
+pytest-cov = ">=6.1.1,<7.0.0"
+types-pillow = "*"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

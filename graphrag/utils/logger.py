@@ -2,7 +2,7 @@ import os
 import sys
 from typing import Any
 
-from loguru import logger  # type: ignore[import-not-found]
+from loguru import logger
 
 
 def setup_logger(

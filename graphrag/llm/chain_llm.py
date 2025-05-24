@@ -1,20 +1,18 @@
 from typing import TYPE_CHECKING, Any
 
-from langchain.output_parsers import (  # type: ignore[import-not-found]
+from langchain.output_parsers import (
     OutputFixingParser,
     PydanticOutputParser,
 )
-from langchain.prompts import PromptTemplate  # type: ignore[import-not-found]
+from langchain.prompts import PromptTemplate
+
+if TYPE_CHECKING:
+    from langchain.schema.runnable import RunnableSequence
 
 from graphrag.llm.base_llm import BaseLLM
 from graphrag.structure.llm_call_structure import DocumentType
 from graphrag.structure.state import State
 from graphrag.utils.logger import setup_logger
-
-if TYPE_CHECKING:
-    from langchain.schema.runnable import (  # type: ignore[import-not-found]
-        RunnableSequence,
-    )
 
 logger = setup_logger(name="ChainLLM", log_file="logs/chain_llm.log")
 
@@ -33,7 +31,7 @@ class ChainLLM(BaseLLM):
         self.model = model
         super().__init__()
         self.llm: Any = None
-        self.chain: RunnableSequence | None = None
+        self.chain: RunnableSequence[dict[str, str], DocumentType] | None = None
 
     def create_chain(self, prompt: str) -> None:
         """Create a chain for the LLM with the given prompt."""
@@ -65,9 +63,9 @@ class ChainLLM(BaseLLM):
         """Call the LLM with a prompt and state."""
         if not self.chain:
             self.create_chain(state.prompt)
-        if not self.chain:
-            msg = "Chain creation failed"
-            raise ValueError(msg)
+            if not self.chain:
+                msg = "Chain creation failed to initialize chain"
+                raise ChainCreationError(msg)
 
         logger.debug("Calling chain with state", extra={"state": state})
         response = self.chain.invoke(

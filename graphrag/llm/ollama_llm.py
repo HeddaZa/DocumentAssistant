@@ -1,4 +1,4 @@
-from langchain_ollama import OllamaLLM  # type: ignore[import-not-found]
+from langchain_ollama import OllamaLLM
 
 from graphrag.llm.chain_llm import ChainLLM
 from graphrag.utils.logger import setup_logger

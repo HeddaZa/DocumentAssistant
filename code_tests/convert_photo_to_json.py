@@ -1,7 +1,7 @@
 import json
 
-import pytesseract  # type: ignore[import-not-found]
-from PIL import Image  # type: ignore[import-untyped]
+import pytesseract
+from PIL import Image
 
 image_path = "data/Pictures/IMG_7789.jpg"
 

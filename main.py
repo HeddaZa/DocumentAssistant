@@ -1,4 +1,4 @@
-from dotenv import load_dotenv  # type: ignore[import-not-found]
+from dotenv import load_dotenv
 
 from graphrag.llm.llm_factory import ConfigDict, LLMFactory
 from graphrag.prompts.prompt_collection import CATEGORISATION_PROMPT
