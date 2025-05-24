@@ -9,7 +9,7 @@ from graphrag.structure.state import State
 @pytest.fixture
 def mock_ollama_llm(mocker: Mock) -> OllamaLLMCall:
     """Fixture to create a mocked OllamaLLM instance."""
-    mocker.patch("llm.ollama_llm.OllamaLLM")
+    mocker.patch("graphrag.llm.ollama_llm.OllamaLLM")
     return OllamaLLMCall(model="gemma:7b")
 
 
@@ -35,8 +35,22 @@ def test_ollama_llm_initialization_with_custom_model() -> None:
 
 def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) -> None:
     """Test OllamaLLM call method."""
+    from graphrag.structure.llm_call_structure import (
+        DocumentType,
+        DocumentTypeEnum,
+        Logs,
+    )
+
     mock_ollama_llm.chain = Mock()
-    mock_ollama_llm.chain.invoke.return_value = {"type": "test", "content": "result"}
+    mock_response = DocumentType(
+        type=DocumentTypeEnum.DOCTOR_RECEIPT,
+        price=100.0,
+        date="2024-05-24",
+        description="Test description",
+        notes="Test notes",
+        logs=[Logs(log="Test log", date="2024-05-24")],
+    )
+    mock_ollama_llm.chain.invoke.return_value = mock_response
 
     result = mock_ollama_llm.call(sample_state)
 
@@ -44,7 +58,9 @@ def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) ->
         {"text": sample_state.text},
         return_only_outputs=True,
     )
-    assert result == {"type": "test", "content": "result"}
+    assert isinstance(result, DocumentType)
+    assert result.type == DocumentTypeEnum.DOCTOR_RECEIPT
+    assert result.description == "Test description"
 
 
 def test_ollama_llm_chain_creation(mock_ollama_llm: OllamaLLMCall) -> None:
@@ -56,7 +72,10 @@ def test_ollama_llm_chain_creation(mock_ollama_llm: OllamaLLMCall) -> None:
 
 def test_ollama_llm_error_handling(mocker: Mock) -> None:
     """Test error handling when Ollama service is not available."""
-    mocker.patch("llm.ollama_llm.OllamaLLM", side_effect=ConnectionError)
+    mocker.patch(
+        "graphrag.llm.ollama_llm.OllamaLLM",
+        side_effect=ConnectionError,
+    )
 
     with pytest.raises(ConnectionError):
         OllamaLLMCall(model="gemma:7b")
