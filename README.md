@@ -2,7 +2,6 @@
 
 ![Status: Work in Progress](https://img.shields.io/badge/Status-Work%20In%20Progress-yellow)
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
 ![Tests](https://img.shields.io/github/actions/workflow/status/HeddaZa/DocumentAssistant/python-quality.yml)
 [![Code Coverage](https://codecov.io/gh/HeddaZa/DocumentAssistant/branch/main/graph/badge.svg)](https://codecov.io/gh/HeddaZa/DocumentAssistant)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
