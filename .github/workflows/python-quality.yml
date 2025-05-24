@@ -28,8 +28,22 @@ jobs:
       run: |
         poetry run mypy . --config-file=mypy.ini --python-version 3.12
     
+    - name: Install and Start Ollama
+      run: |
+        curl -fsSL https://ollama.com/install.sh | sh
+        ollama serve &
+        sleep 10  # Wait for Ollama to start
+        ollama pull gemma:7b
+    
     - name: Run tests with coverage
-      run: poetry run pytest -v --cov=. --cov-report=xml
+      run: |
+        # Run unit tests
+        poetry run pytest -v --cov=. --cov-report=xml -m "not integration"
+        
+        # Run integration tests separately if Ollama is available
+        if command -v ollama &> /dev/null; then
+          poetry run pytest -v -m integration
+        fi
     
     - name: Upload coverage reports
       uses: codecov/codecov-action@v4
