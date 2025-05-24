@@ -1,8 +1,38 @@
+import shutil
+import subprocess
+import time
+
 import pytest
 
 from graphrag.llm.llm_factory import ConfigDict, LLMFactory
 from graphrag.structure.llm_call_structure import DocumentType
 from graphrag.structure.state import State
+
+pytestmark = pytest.mark.skipif(
+    shutil.which("ollama") is None,
+    reason="Ollama is not installed",
+)
+
+
+class OllamaNotInstalledError(RuntimeError):
+    def __init__(self) -> None:
+        msg = "Ollama is not installed or not found in PATH."
+        super().__init__(msg)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def ensure_ollama_model() -> None:
+    """Ensure Ollama model is available."""
+    ollama_path = shutil.which("ollama")
+    if ollama_path is None:
+        raise OllamaNotInstalledError
+    allowed_models = {"gemma:7b"}
+    model = "gemma:7b"
+    if model not in allowed_models:
+        msg = f"Model '{model}' is not allowed."
+        raise ValueError(msg)
+    subprocess.run([ollama_path, "pull", model], check=True)
+    time.sleep(5)
 
 
 @pytest.fixture
