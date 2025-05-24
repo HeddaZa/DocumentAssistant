@@ -1,6 +1,12 @@
 # Document Assistant
 
 ![Status: Work in Progress](https://img.shields.io/badge/Status-Work%20In%20Progress-yellow)
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Tests](https://img.shields.io/github/actions/workflow/status/HeddaZa/DocumentAssistant/python-quality.yml)
+[![Code Coverage](https://codecov.io/gh/HeddaZa/DocumentAssistant/branch/main/graph/badge.svg)](https://codecov.io/gh/HeddaZa/DocumentAssistant)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+![Made with](https://img.shields.io/badge/Made%20with-LangChain-orange)
 
 This will be my document assistant. At some point. So it's work in progress.
 
@@ -22,8 +28,9 @@ I use Ollama but coded an OpenAI option. However, I realised my credit at OpenAI
 - [x] Basic LLM integration
 - [x] Ollama support
 - [ ] OpenAI integration
+- [ ] Pictures will be classified
+- [ ] Pdfs will be classified
 - [ ] Neo4j setup
-- [ ] Document classification
 - [ ] pipeline from document to graphDB entry
 - [ ] Tax return query system
 
