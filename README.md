@@ -27,6 +27,7 @@ I use Ollama but coded an OpenAI option. However, I realised my credit at OpenAI
 - [x] Basic LLM integration
 - [x] Ollama support
 - [ ] OpenAI integration
+- [ ] Langfuse with docker
 - [ ] Pictures will be classified
 - [ ] Pdfs will be classified
 - [ ] Neo4j setup
