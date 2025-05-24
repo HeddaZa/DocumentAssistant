@@ -1,14 +1,14 @@
 import os
 import sys
+from typing import Any
 
-from loguru import logger
-from loguru._logger import Logger
+from loguru import logger  # type: ignore[import-not-found]
 
 
 def setup_logger(
     name: str,
     log_file: str = "app.log",
-) -> Logger:
+) -> Any:
     """Sets up a logger with the specified name, log file, and level."""
     log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 

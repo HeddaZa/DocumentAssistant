@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel  # type: ignore[import-not-found]
 
 
 class DocumentTypeEnum(str, Enum):

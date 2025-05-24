@@ -1,20 +1,39 @@
-from langchain.output_parsers import OutputFixingParser, PydanticOutputParser
-from langchain.prompts import PromptTemplate
-from llm.base_llm import BaseLLM
-from structure.llm_call_structure import DocumentType
-from structure.state import State
-from utils.logger import setup_logger
+from typing import TYPE_CHECKING, Any
+
+from langchain.output_parsers import (  # type: ignore[import-not-found]
+    OutputFixingParser,
+    PydanticOutputParser,
+)
+from langchain.prompts import PromptTemplate  # type: ignore[import-not-found]
+
+from graphrag.llm.base_llm import BaseLLM
+from graphrag.structure.llm_call_structure import DocumentType
+from graphrag.structure.state import State
+from graphrag.utils.logger import setup_logger
+
+if TYPE_CHECKING:
+    from langchain.schema.runnable import (  # type: ignore[import-not-found]
+        RunnableSequence,
+    )
 
 logger = setup_logger(name="ChainLLM", log_file="logs/chain_llm.log")
 
 
-class ChainLLM(BaseLLM):
-    """Parent class for LLMs that use the chain pattern."""
+class ChainCreationError(Exception):
+    """Custom exception for chain creation errors."""
 
-    def __init__(self) -> None:
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+
+
+class ChainLLM(BaseLLM):
+    """Base class for LLM chains."""
+
+    def __init__(self, model: str | None = None) -> None:
+        self.model = model
         super().__init__()
-        self.llm = None
-        self.chain = None
+        self.llm: Any = None
+        self.chain: RunnableSequence | None = None
 
     def create_chain(self, prompt: str) -> None:
         """Create a chain for the LLM with the given prompt."""
@@ -22,25 +41,34 @@ class ChainLLM(BaseLLM):
             msg = "LLM not initialized"
             raise ValueError(msg)
 
-        pydantic_parser = PydanticOutputParser(pydantic_object=DocumentType)
-        output_parser = OutputFixingParser.from_llm(
-            parser=pydantic_parser,
-            llm=self.llm,
-        )
-        prompt = PromptTemplate(
-            template=prompt + "\n{format_instructions}",
-            input_variables=[],
-            partial_variables={
-                "format_instructions": output_parser.get_format_instructions(),
-            },
-        )
-        self.chain = prompt | self.llm | output_parser
-        logger.debug("Chain created with prompt", extra={"prompt": prompt})
+        try:
+            pydantic_parser = PydanticOutputParser(pydantic_object=DocumentType)
+            output_parser = OutputFixingParser.from_llm(
+                parser=pydantic_parser,
+                llm=self.llm,
+            )
+            full_prompt = PromptTemplate(
+                template=prompt + "\n{format_instructions}",
+                input_variables=[],
+                partial_variables={
+                    "format_instructions": output_parser.get_format_instructions(),
+                },
+            )
+            self.chain = full_prompt | self.llm | output_parser
+            logger.debug("Chain created with prompt", extra={"prompt": full_prompt})
+        except Exception as e:
+            msg = f"Chain creation failed: {e!s}"
+            logger.exception(msg)
+            raise ChainCreationError(msg) from e
 
-    def call(self, state: State) -> str:
+    def call(self, state: State) -> DocumentType:
         """Call the LLM with a prompt and state."""
         if not self.chain:
             self.create_chain(state.prompt)
+        if not self.chain:
+            msg = "Chain creation failed"
+            raise ValueError(msg)
+
         logger.debug("Calling chain with state", extra={"state": state})
         response = self.chain.invoke(
             {
@@ -48,4 +76,9 @@ class ChainLLM(BaseLLM):
             },
             return_only_outputs=True,
         )
+        if not isinstance(response, DocumentType):
+            msg = f"Unexpected response type: {type(response)}"
+            logger.error(msg)
+            raise TypeError(msg)
+
         return response

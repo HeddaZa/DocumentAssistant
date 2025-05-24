@@ -1,5 +1,5 @@
-from langchain.prompts import PromptTemplate
-from langchain_ollama import OllamaLLM
+from langchain.prompts import PromptTemplate  # type: ignore[import-not-found]
+from langchain_ollama import OllamaLLM  # type: ignore[import-not-found]
 
 # Initialize Ollama model
 llm = OllamaLLM(model="gemma")

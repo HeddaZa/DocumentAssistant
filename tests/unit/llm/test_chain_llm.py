@@ -13,7 +13,7 @@ def test_chain_creation() -> None:
 
 
 @pytest.fixture
-def mock_llm(mocker: MockFixture) -> None:
+def mock_llm(mocker: MockFixture) -> ChainLLM:
     """Fixture to create a mock LLM instance."""
     llm = ChainLLM()
     llm.llm = mocker.Mock()
@@ -37,7 +37,7 @@ def test_call_creates_chain(mock_llm: ChainLLM) -> None:
         ]
     }
     """
-    mock_llm.llm.return_value = mock_response
+    mock_llm.llm.invoke.return_value = mock_response
 
     state = State(prompt="test prompt", text="test text", result=None)
     mock_llm.call(state)

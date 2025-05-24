@@ -1,6 +1,6 @@
 import pytest
 
-from graphrag.llm.llm_factory import LLMFactory
+from graphrag.llm.llm_factory import ConfigDict, LLMFactory
 from graphrag.structure.llm_call_structure import DocumentType
 from graphrag.structure.state import State
 
@@ -17,7 +17,7 @@ def config() -> dict[str, dict[str, str]]:
 
 
 @pytest.mark.integration
-def test_full_llm_pipeline(config: dict[str, dict[str, str]]) -> None:
+def test_full_llm_pipeline(config: ConfigDict) -> None:
     """Test the complete LLM pipeline from factory creation to response."""
     llm = LLMFactory.create_llm(config)
 
@@ -40,7 +40,7 @@ def test_full_llm_pipeline(config: dict[str, dict[str, str]]) -> None:
 
 
 @pytest.mark.integration
-def test_llm_error_handling(config: dict[str, dict[str, str]]) -> None:
+def test_llm_error_handling(config: ConfigDict) -> None:
     """Test error handling with invalid input."""
     llm = LLMFactory.create_llm(config)
 
@@ -51,7 +51,7 @@ def test_llm_error_handling(config: dict[str, dict[str, str]]) -> None:
 
 
 @pytest.mark.integration
-def test_long_input_handling(config: dict[str, dict[str, str]]) -> None:
+def test_long_input_handling(config: ConfigDict) -> None:
     """Test handling of longer input texts."""
     llm = LLMFactory.create_llm(config)
 

@@ -1,11 +1,24 @@
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 
-from llm.base_llm import BaseLLM
-from llm.ollama_llm import OllamaLLMCall
-from llm.openai_llm import OpenAILLM
-from utils.logger import setup_logger
+from graphrag.llm.base_llm import BaseLLM
+from graphrag.llm.ollama_llm import OllamaLLMCall
+from graphrag.llm.openai_llm import OpenAILLM
+from graphrag.utils.logger import setup_logger
 
 logger = setup_logger(name="LLMFactory", log_file="logs/llm_factory.log")
+
+
+class LLMConfig(TypedDict):
+    """Configuration for the LLM."""
+
+    type: str
+    model: str | None
+
+
+class ConfigDict(TypedDict):
+    """Configuration dictionary containing LLM configuration."""
+
+    llm: LLMConfig
 
 
 class LLMFactory:
@@ -17,7 +30,7 @@ class LLMFactory:
     }
 
     @classmethod
-    def create_llm(cls, config: dict[str, str]) -> BaseLLM:
+    def create_llm(cls, config: ConfigDict) -> BaseLLM:
         """Create an LLM instance based on the config."""
         llm_type = config["llm"]["type"]
         llm_class = cls._llm_classes.get(llm_type)

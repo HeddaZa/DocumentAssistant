@@ -1,6 +1,6 @@
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # type: ignore[import-not-found]
 
-from graphrag.llm.llm_factory import LLMFactory
+from graphrag.llm.llm_factory import ConfigDict, LLMFactory
 from graphrag.prompts.prompt_collection import CATEGORISATION_PROMPT
 from graphrag.structure.state import State
 from graphrag.utils.logger import setup_logger
@@ -14,7 +14,7 @@ CONFIG = load_config("config.yaml")
 
 def main(text: str) -> None:
     """Load configuration and process text with LLM."""
-    config = {
+    config: ConfigDict = {
         "llm": {
             "type": "ollama",
             "model": CONFIG["ollama"]["model"],

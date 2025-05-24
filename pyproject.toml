@@ -19,7 +19,8 @@ dependencies = [
     "langchain-openai (>=0.3.16,<0.4.0)",
     "pytest (>=8.3.5,<9.0.0)",
     "pytest-mock (>=3.14.0,<4.0.0)",
-    "pytest-cov (>=6.1.1,<7.0.0)"
+    "pytest-cov (>=6.1.1,<7.0.0)",
+    "types-pyyaml (>=6.0.12.20250516,<7.0.0.0)"
 ]
 
 [tool.poetry]
@@ -38,6 +39,7 @@ pytest = "^8.3.5"
 pytest-cov = "^6.1.1"
 ruff = "^0.3.0"
 mypy = "^1.8.0"
+pytest-mypy-plugins = "^3.2.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -64,6 +66,7 @@ ignore = [
     "ANN102",
     "D203",
     "D212",
+    "ANN401",
 ]
 
 [tool.ruff.lint.per-file-ignores]
