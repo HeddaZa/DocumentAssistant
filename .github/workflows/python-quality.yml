@@ -1,32 +1,25 @@
 name: Python Checks
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.12"]
-
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.12'
     
     - name: Install Poetry
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
         
     - name: Install dependencies
-      run: poetry install
+      run: |
+        poetry install --with dev
     
     - name: Run linting
       run: poetry run ruff check .
