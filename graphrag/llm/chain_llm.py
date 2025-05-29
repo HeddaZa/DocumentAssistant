@@ -12,9 +12,12 @@ if TYPE_CHECKING:
 from graphrag.llm.base_llm import BaseLLM
 from graphrag.structure.llm_call_structure import DocumentType
 from graphrag.structure.state import State
+from graphrag.utils.langfuse_handler import LangfuseHandler
 from graphrag.utils.logger import setup_logger
 
 logger = setup_logger(name="ChainLLM", log_file="logs/chain_llm.log")
+
+langfuse = LangfuseHandler()
 
 
 class ChainCreationError(Exception):
@@ -59,6 +62,7 @@ class ChainLLM(BaseLLM):
             logger.exception(msg)
             raise ChainCreationError(msg) from e
 
+    @langfuse.trace()
     def call(self, state: State) -> DocumentType:
         """Call the LLM with a prompt and state."""
         if not self.chain:
@@ -69,9 +73,7 @@ class ChainLLM(BaseLLM):
 
         logger.debug("Calling chain with state", extra={"state": state})
         response = self.chain.invoke(
-            {
-                "text": state.text,
-            },
+            {"text": state.text},
             return_only_outputs=True,
         )
         if not isinstance(response, DocumentType):
