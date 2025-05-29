@@ -44,6 +44,10 @@ class LLMFactory:
             llm = llm_class(model=config["llm"]["model"])
         elif llm_type == "openai":
             llm = llm_class()
+        else:
+            msg = f"LLM type {llm_type!r} is not implemented in the factory."
+            logger.error(msg)
+            raise ValueError(msg)
 
         logger.info("Created LLM instance", extra={"type": llm_type})
         return llm
