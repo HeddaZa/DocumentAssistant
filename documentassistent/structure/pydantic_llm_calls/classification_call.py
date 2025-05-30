@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from graphrag.structure.pydantic_llm_calls.confidence import Confidence
+from documentassistent.structure.pydantic_llm_calls.confidence import Confidence
 
 
 class DocumentType(str, Enum):

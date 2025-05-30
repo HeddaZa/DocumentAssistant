@@ -15,7 +15,7 @@ description = ""
 authors = ["Hedda G <hedda.gressel@gmail.com>"]
 readme = "README.md"
 packages = [
-    { include = "graphrag" }
+    { include = "documentassistent" }
 ]
 
 [tool.poetry.dependencies]

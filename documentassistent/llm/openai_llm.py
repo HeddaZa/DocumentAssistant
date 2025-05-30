@@ -3,8 +3,8 @@ import os
 from langchain_openai import ChatOpenAI
 from pydantic import SecretStr
 
-from graphrag.llm.chain_llm import ChainLLM
-from graphrag.utils.logger import setup_logger
+from documentassistent.llm.chain_llm import ChainLLM
+from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(name="OpenAILLM", log_file="logs/openai_llm.log")
 

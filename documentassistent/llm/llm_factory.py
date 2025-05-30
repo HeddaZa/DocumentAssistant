@@ -1,9 +1,9 @@
 from typing import ClassVar, TypedDict
 
-from graphrag.llm.base_llm import BaseLLM
-from graphrag.llm.ollama_llm import OllamaLLMCall
-from graphrag.llm.openai_llm import OpenAILLM
-from graphrag.utils.logger import setup_logger
+from documentassistent.llm.base_llm import BaseLLM
+from documentassistent.llm.ollama_llm import OllamaLLMCall
+from documentassistent.llm.openai_llm import OpenAILLM
+from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(name="LLMFactory", log_file="logs/llm_factory.log")
 

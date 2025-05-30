@@ -3,7 +3,7 @@ from typing import Any, cast
 
 import yaml
 
-from graphrag.utils.logger import setup_logger
+from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(name="ConfigLoader")
 

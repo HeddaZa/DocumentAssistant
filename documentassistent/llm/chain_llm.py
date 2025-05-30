@@ -9,11 +9,11 @@ from langchain.prompts import PromptTemplate
 if TYPE_CHECKING:
     from langchain.schema.runnable import RunnableSequence
 
-from graphrag.llm.base_llm import BaseLLM
-from graphrag.structure.pydantic_llm_calls.invoice_call import DocumentType
-from graphrag.structure.state import State
-from graphrag.utils.langfuse_handler import LangfuseHandler
-from graphrag.utils.logger import setup_logger
+from documentassistent.llm.base_llm import BaseLLM
+from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
+from documentassistent.structure.state import State
+from documentassistent.utils.langfuse_handler import LangfuseHandler
+from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(name="ChainLLM", log_file="logs/chain_llm.log")
 

@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
 
-from graphrag.llm.llm_factory import ConfigDict, LLMFactory
-from graphrag.prompts.prompt_collection import CATEGORISATION_PROMPT
-from graphrag.structure.state import State
-from graphrag.utils.logger import setup_logger
+from documentassistent.llm.llm_factory import ConfigDict, LLMFactory
+from documentassistent.prompts.prompt_collection import CATEGORISATION_PROMPT
+from documentassistent.structure.state import State
+from documentassistent.utils.logger import setup_logger
 from load_config import load_config
 
 load_dotenv()

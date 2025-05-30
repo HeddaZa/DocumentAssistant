@@ -3,8 +3,8 @@ from unittest.mock import Mock
 import pytest
 from pytest_mock import MockFixture
 
-from graphrag.llm.chain_llm import ChainLLM
-from graphrag.structure.state import State
+from documentassistent.llm.chain_llm import ChainLLM
+from documentassistent.structure.state import State
 
 
 def test_chain_creation() -> None:
@@ -24,7 +24,7 @@ def mock_llm(mocker: MockFixture) -> ChainLLM:
 
 def test_call_creates_chain(mock_llm: ChainLLM, mocker: MockFixture) -> None:
     """Test that calling the LLM creates a chain if it doesn't exist."""
-    from graphrag.structure.pydantic_llm_calls.invoice_call import (
+    from documentassistent.structure.pydantic_llm_calls.invoice_call import (
         DocumentType,
         InvoiceTypeEnum,
         Logs,

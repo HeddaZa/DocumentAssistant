@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 
-from graphrag.structure.pydantic_llm_calls.classification_call import Classification
+from documentassistent.structure.pydantic_llm_calls.classification_call import (
+    Classification,
+)
 
 
 class Document(BaseModel):

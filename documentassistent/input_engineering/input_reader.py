@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from graphrag.structure.state import Document
+from documentassistent.structure.state import Document
 
 
 class DocumentReader(ABC):

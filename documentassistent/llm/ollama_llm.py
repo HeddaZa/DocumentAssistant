@@ -1,7 +1,7 @@
 from langchain_ollama import OllamaLLM
 
-from graphrag.llm.chain_llm import ChainLLM
-from graphrag.utils.logger import setup_logger
+from documentassistent.llm.chain_llm import ChainLLM
+from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(name="OllamaLLM", log_file="logs/ollama_llm.log")
 

@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from graphrag.structure.pydantic_llm_calls.invoice_call import DocumentType
-from graphrag.structure.state import State
-from graphrag.utils.logger import setup_logger
+from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
+from documentassistent.structure.state import State
+from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(name="BaseLLM", log_file="logs/base_llm.log")
 

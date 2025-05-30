@@ -4,9 +4,9 @@ import time
 
 import pytest
 
-from graphrag.llm.llm_factory import ConfigDict, LLMFactory
-from graphrag.structure.pydantic_llm_calls.invoice_call import DocumentType
-from graphrag.structure.state import State
+from documentassistent.llm.llm_factory import ConfigDict, LLMFactory
+from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
+from documentassistent.structure.state import State
 
 pytestmark = pytest.mark.skipif(
     shutil.which("ollama") is None,

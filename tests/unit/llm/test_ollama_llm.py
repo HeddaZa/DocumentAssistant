@@ -2,8 +2,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from graphrag.llm.ollama_llm import OllamaLLMCall
-from graphrag.structure.state import State
+from documentassistent.llm.ollama_llm import OllamaLLMCall
+from documentassistent.structure.state import State
 
 
 @pytest.fixture
@@ -35,7 +35,7 @@ def test_ollama_llm_initialization_with_custom_model() -> None:
 
 def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) -> None:
     """Test OllamaLLM call method."""
-    from graphrag.structure.pydantic_llm_calls.invoice_call import (
+    from documentassistent.structure.pydantic_llm_calls.invoice_call import (
         DocumentType,
         InvoiceTypeEnum,
         Logs,
