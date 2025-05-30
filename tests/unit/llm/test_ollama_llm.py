@@ -35,15 +35,15 @@ def test_ollama_llm_initialization_with_custom_model() -> None:
 
 def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) -> None:
     """Test OllamaLLM call method."""
-    from graphrag.structure.llm_call_structure import (
+    from graphrag.structure.pydantic_llm_calls.invoice_call import (
         DocumentType,
-        DocumentTypeEnum,
+        InvoiceTypeEnum,
         Logs,
     )
 
     mock_ollama_llm.chain = Mock()
     mock_response = DocumentType(
-        type=DocumentTypeEnum.DOCTOR_RECEIPT,
+        type=InvoiceTypeEnum.DOCTOR_RECEIPT,
         price=100.0,
         date="2024-05-24",
         description="Test description",
@@ -59,7 +59,7 @@ def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) ->
         return_only_outputs=True,
     )
     assert isinstance(result, DocumentType)
-    assert result.type == DocumentTypeEnum.DOCTOR_RECEIPT
+    assert result.type == InvoiceTypeEnum.DOCTOR_RECEIPT
     assert result.description == "Test description"
 
 

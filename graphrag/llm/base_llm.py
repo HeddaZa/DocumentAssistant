@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from graphrag.structure.llm_call_structure import DocumentType
+from graphrag.structure.pydantic_llm_calls.invoice_call import DocumentType
 from graphrag.structure.state import State
 from graphrag.utils.logger import setup_logger
 

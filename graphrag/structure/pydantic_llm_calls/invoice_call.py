@@ -3,7 +3,7 @@ from enum import Enum
 from pydantic import BaseModel
 
 
-class DocumentTypeEnum(str, Enum):
+class InvoiceTypeEnum(str, Enum):
     """Enum for representing the type of document."""
 
     DOCTOR_RECEIPT = "receipt_from_doctor"
@@ -22,9 +22,9 @@ class Logs(BaseModel):
 class DocumentType(BaseModel):
     """Pydantic model for representing the type of document."""
 
-    type: DocumentTypeEnum
+    type: InvoiceTypeEnum
     price: float
     date: str
     description: str
     notes: str
-    logs: list[Logs]  # Changed from single Logs to List[Logs]
+    logs: list[Logs]

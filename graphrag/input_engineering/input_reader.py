@@ -1,14 +1,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from pydantic import BaseModel
-
-
-class Document(BaseModel):
-    """Represents a document with content and optional metadata."""
-
-    content: str
-    metadata: dict | None = {}
+from graphrag.structure.state import Document
 
 
 class DocumentReader(ABC):
