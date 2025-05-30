@@ -5,7 +5,7 @@ import time
 import pytest
 
 from graphrag.llm.llm_factory import ConfigDict, LLMFactory
-from graphrag.structure.llm_call_structure import DocumentType
+from graphrag.structure.pydantic_llm_calls.invoice_call import DocumentType
 from graphrag.structure.state import State
 
 pytestmark = pytest.mark.skipif(

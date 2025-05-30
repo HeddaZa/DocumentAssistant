@@ -24,14 +24,14 @@ def mock_llm(mocker: MockFixture) -> ChainLLM:
 
 def test_call_creates_chain(mock_llm: ChainLLM, mocker: MockFixture) -> None:
     """Test that calling the LLM creates a chain if it doesn't exist."""
-    from graphrag.structure.llm_call_structure import (
+    from graphrag.structure.pydantic_llm_calls.invoice_call import (
         DocumentType,
-        DocumentTypeEnum,
+        InvoiceTypeEnum,
         Logs,
     )
 
     mock_response = DocumentType(
-        type=DocumentTypeEnum.DOCTOR_RECEIPT,
+        type=InvoiceTypeEnum.DOCTOR_RECEIPT,
         price=100.0,
         date="2024-05-23",
         description="Doctor visit",
@@ -53,5 +53,5 @@ def test_call_creates_chain(mock_llm: ChainLLM, mocker: MockFixture) -> None:
         return_only_outputs=True,
     )
     assert isinstance(result, DocumentType)
-    assert result.type == DocumentTypeEnum.DOCTOR_RECEIPT
+    assert result.type == InvoiceTypeEnum.DOCTOR_RECEIPT
     assert result.description == "Doctor visit"

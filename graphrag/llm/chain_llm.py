@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from langchain.schema.runnable import RunnableSequence
 
 from graphrag.llm.base_llm import BaseLLM
-from graphrag.structure.llm_call_structure import DocumentType
+from graphrag.structure.pydantic_llm_calls.invoice_call import DocumentType
 from graphrag.structure.state import State
 from graphrag.utils.langfuse_handler import LangfuseHandler
 from graphrag.utils.logger import setup_logger
