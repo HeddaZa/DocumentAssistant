@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from langchain.schema.runnable import RunnableSequence
 
 from documentassistent.llm.base_llm import BaseLLM
-from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
 from documentassistent.structure.state import State
 from documentassistent.utils.langfuse_handler import LangfuseHandler
 from documentassistent.utils.logger import setup_logger
@@ -34,16 +33,18 @@ class ChainLLM(BaseLLM):
         self.model = model
         super().__init__()
         self.llm: Any = None
-        self.chain: RunnableSequence[dict[str, str], DocumentType] | None = None
+        self.chain: RunnableSequence[dict[str, str], Any] | None = None
 
-    def create_chain(self, prompt: str) -> None:
-        """Create a chain for the LLM with the given prompt."""
+    def create_chain(self, prompt: str, pydantic_object: type) -> None:
+        """Create a chain for the LLM with the given prompt and pydantic object."""
         if not self.llm:
             msg = "LLM not initialized"
             raise ValueError(msg)
 
         try:
-            pydantic_parser = PydanticOutputParser(pydantic_object=DocumentType)
+            pydantic_parser: PydanticOutputParser = PydanticOutputParser(
+                pydantic_object=pydantic_object,
+            )
             output_parser = OutputFixingParser.from_llm(
                 parser=pydantic_parser,
                 llm=self.llm,
@@ -63,10 +64,10 @@ class ChainLLM(BaseLLM):
             raise ChainCreationError(msg) from e
 
     @langfuse.trace()
-    def call(self, state: State) -> DocumentType:
-        """Call the LLM with a prompt and state."""
+    def call(self, state: State, pydantic_object: type) -> Any:
+        """Call the LLM with a prompt, state, and pydantic object."""
         if not self.chain:
-            self.create_chain(state.prompt)
+            self.create_chain(state.prompt, pydantic_object)
             if not self.chain:
                 msg = "Chain creation failed to initialize chain"
                 raise ChainCreationError(msg)
@@ -76,7 +77,7 @@ class ChainLLM(BaseLLM):
             {"text": state.text},
             return_only_outputs=True,
         )
-        if not isinstance(response, DocumentType):
+        if not isinstance(response, pydantic_object):
             msg = f"Unexpected response type: {type(response)}"
             logger.error(msg)
             raise TypeError(msg)

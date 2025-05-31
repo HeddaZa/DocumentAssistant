@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 
 from documentassistent.llm.llm_factory import ConfigDict, LLMFactory
 from documentassistent.prompts.prompt_collection import CATEGORISATION_PROMPT
+from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
 from documentassistent.structure.state import State
 from documentassistent.utils.logger import setup_logger
 from load_config import load_config
@@ -29,7 +30,7 @@ def main(text: str) -> None:
         text=text,
         result=None,
     )
-    result = llm.call(state)
+    result = llm.call(state, pydantic_object=DocumentType)
     logger.debug("Full result details: {}", result)
 
 

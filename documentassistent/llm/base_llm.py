@@ -16,7 +16,7 @@ class BaseLLM(ABC):
         logger.info("%s initialized.", self.__class__.__name__)
 
     @abstractmethod
-    def call(self, state: State) -> DocumentType:
+    def call(self, state: State, pydantic_object: type) -> DocumentType:
         """Abstract method to call the LLM with a prompt."""
         logger.debug("call() method invoked with state: %s", state)
         error_message = "Subclasses must implement call method"
