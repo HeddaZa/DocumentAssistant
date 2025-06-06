@@ -20,4 +20,24 @@ class State(BaseModel):
     document: Document | None = None
     classification_prompt: str | None = None
     classification_result: Classification | None = None
-    text: str  # dummy item, needs to be removed once agents are implemented
+    text: str
+
+
+class LLMCall(BaseModel):
+    """Pydantic model for LLM calls."""
+
+    prompt: str
+    pydantic_object: type
+    result: str | None = None
+    state: State | None = None
+
+    def __str__(self) -> str:
+        """Return a string representation of the LLMCall instance."""
+        return (
+            f"LLMCall(prompt={self.prompt}, "
+            f"pydantic_object={self.pydantic_object.__name__})"
+        )
+
+    def __hash__(self) -> int:
+        """Return a hash value for the LLMCall instance."""
+        return hash((self.prompt, self.pydantic_object))
