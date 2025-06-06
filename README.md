@@ -17,16 +17,21 @@ I use Ollama but coded an OpenAI option. However, I realised my credit at OpenAI
 
 
 ### Using Ollama: 
-* download Ollama
+* download Ollama (https://ollama.com/download/mac) and install it
 * start Ollama with `ollama serve`
 * pull model. Model used here: gemma:7b
 * if you use a different model, adjust name in config file
+
+### Using LangFuse:
+* clone repo https://github.com/langfuse/langfuse.git
+* build and start the LangFuse docker container
+* instructions: https://langfuse.com/self-hosting/docker-compose
 
 ## Project Status
 - [x] Basic LLM integration
 - [x] Ollama support
 - [ ] OpenAI integration
-- [ ] Langfuse with docker
+- [x] Langfuse with docker
 - [ ] Langgraph Agent System for classification
 - [ ] Pictures will be classified
 - [ ] Pdfs will be classified
