@@ -28,3 +28,14 @@ class DocumentType(BaseModel):
     description: str
     notes: str
     logs: list[Logs]
+
+
+class InvoiceExtraction(BaseModel):
+    """Pydantic model for extracted invoice information."""
+
+    type: InvoiceTypeEnum
+    price: float
+    date: str
+    description: str
+    notes: str
+    logs: list[Logs]
