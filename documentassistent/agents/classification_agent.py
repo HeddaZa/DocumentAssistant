@@ -49,6 +49,7 @@ class ClassificationAgent:
         )
         if llm_call.state is None:
             msg = "LLMCall.state must not be None"
+            logger.error(msg)
             raise ValueError(msg)
         result = self.llm.call(llm_call.state, pydantic_object=Classification)
         if not isinstance(result, Classification):
