@@ -53,12 +53,6 @@ if __name__ == "__main__":
     path_pdfs = list(Path("data/pdfs/").glob("*.pdf"))
     paths_pictures = list(Path("data/Pictures/").glob("*.jpg"))
 
-    if path_pdfs:
-        main(path=path_pdfs[0])
-    else:
-        logger.error("No PDF files found in the directory.")
+    main(path=path_pdfs[0])
 
-    if paths_pictures:
-        main(path=paths_pictures[0])
-    else:
-        logger.error("No picture files found in the directory.")
+    main(path=paths_pictures[0])
