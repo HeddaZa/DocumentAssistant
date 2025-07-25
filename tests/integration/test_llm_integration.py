@@ -5,7 +5,10 @@ import time
 import pytest
 
 from documentassistent.llm.llm_factory import ConfigDict, LLMFactory
-from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
+from documentassistent.structure.pydantic_llm_calls.classification_call import (
+    Classification,
+    DocumentType,
+)
 from documentassistent.structure.state import State
 
 pytestmark = pytest.mark.skipif(
@@ -52,21 +55,21 @@ def test_full_llm_pipeline(config: ConfigDict) -> None:
     llm = LLMFactory.create_llm(config)
 
     test_state = State(
-        prompt="Categorize this document. Return type and content.",
+        prompt="Classify this document.",
         text="This is a medical receipt for 100 EUR from Dr. Smith.",
         result=None,
+        classification_prompt="Classify this document.",
+        classification_result=None,
     )
 
-    result = llm.call(test_state)
+    result = llm.call(test_state, Classification)
 
-    assert isinstance(result, DocumentType)
-    assert hasattr(result, "type")
-    assert hasattr(result, "price")
-    assert hasattr(result, "description")
-
-    assert result.type is not None
-    assert isinstance(result.price, int | float)
-    assert isinstance(result.description, str)
+    assert isinstance(result, Classification)
+    assert isinstance(result.label, DocumentType)
+    assert hasattr(result.confidence, "level")
+    assert hasattr(result.confidence, "explanation")
+    assert result.confidence.level is not None
+    assert isinstance(result.confidence.explanation, str)
 
 
 @pytest.mark.integration
@@ -74,9 +77,15 @@ def test_llm_error_handling(config: ConfigDict) -> None:
     """Test error handling with invalid input."""
     llm = LLMFactory.create_llm(config)
 
-    empty_state = State(prompt="Categorize this.", text="", result=None)
+    empty_state = State(
+        prompt="Classify this.",
+        text="",
+        result=None,
+        classification_prompt="Classify this.",
+        classification_result=None,
+    )
 
-    result = llm.call(empty_state)
+    result = llm.call(empty_state, Classification)
     assert result is not None
 
 
@@ -86,7 +95,13 @@ def test_long_input_handling(config: ConfigDict) -> None:
     llm = LLMFactory.create_llm(config)
 
     long_text = " ".join(["This is a test document."] * 50)
-    test_state = State(prompt="Summarize this text.", text=long_text, result=None)
+    test_state = State(
+        prompt="Summarize and classify this text.",
+        text=long_text,
+        result=None,
+        classification_prompt="Summarize and classify this text.",
+        classification_result=None,
+    )
 
-    result = llm.call(test_state)
+    result = llm.call(test_state, Classification)
     assert result is not None

@@ -17,7 +17,7 @@ CONFIG = load_config("config.yaml")
 
 
 def main(path: Path) -> None:
-    """Load configuration and process text with LLM."""
+    """Process a file from the given Path using LLM based on its type (PDF or image)."""
     if path.suffix.lower() in [".pdf"]:
         reader_pdf = PDFReader()
         text = reader_pdf.read(str(path)).content
@@ -54,4 +54,5 @@ if __name__ == "__main__":
     paths_pictures = list(Path("data/Pictures/").glob("*.jpg"))
 
     main(path=path_pdfs[0])
+
     main(path=paths_pictures[0])

@@ -19,6 +19,6 @@ class Confidence(BaseModel):
             "The confidence level of the classification result: high, medium, or low."
         ),
     )
-    explanation: float = Field(
+    explanation: str = Field(
         description="Explanation why ConfidenceLevel was chosen.",
     )
