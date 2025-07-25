@@ -18,8 +18,8 @@ class State(BaseModel):
     prompt: str
     result: str | None = None
     document: Document | None = None
-    classification_prompt: str | None = None
     classification_result: Classification | None = None
+    special_agent_result: str | None = None
     text: str
 
 

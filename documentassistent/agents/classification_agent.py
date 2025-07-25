@@ -3,7 +3,7 @@ from documentassistent.prompts.prompt_collection import CATEGORISATION_PROMPT
 from documentassistent.structure.pydantic_llm_calls.classification_call import (
     Classification,
 )
-from documentassistent.structure.state import LLMCall, State
+from documentassistent.structure.state import State
 from documentassistent.utils.logger import setup_logger
 from load_config import load_config
 
@@ -35,25 +35,20 @@ class ClassificationAgent:
             extra={"llm_type": type(self.llm).__name__},
         )
 
-    def classify(self, text: str) -> Classification:
+    def classify(self, state: State) -> State:
         """Classify the input text and return a Classification result."""
-        state = State(
-            prompt=CATEGORISATION_PROMPT,
-            text=text,
-            result=None,
-        )
-        llm_call = LLMCall(
-            prompt=CATEGORISATION_PROMPT,
-            pydantic_object=Classification,
-            state=state,
-        )
-        if llm_call.state is None:
-            msg = "LLMCall.state must not be None"
+        if state is None:
+            msg = "state must not be None"
             logger.error(msg)
             raise ValueError(msg)
-        result = self.llm.call(llm_call.state, pydantic_object=Classification)
+        state.prompt = CATEGORISATION_PROMPT
+        result = self.llm.call(state, pydantic_object=Classification)
         if not isinstance(result, Classification):
             msg = f"Expected Classification, got {type(result)}"
             raise TypeError(msg)
         logger.debug("Classification result: {}", result)
-        return result
+        return state.model_copy(
+            update={
+                "classification_result": result.label,
+            },
+        )
