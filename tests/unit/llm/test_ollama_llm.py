@@ -9,7 +9,7 @@ from documentassistent.structure.state import State
 @pytest.fixture
 def mock_ollama_llm(mocker: Mock) -> OllamaLLMCall:
     """Fixture to create a mocked OllamaLLM instance."""
-    mocker.patch("graphrag.llm.ollama_llm.OllamaLLM")
+    mocker.patch("documentassistent.llm.ollama_llm.OllamaLLM")
     return OllamaLLMCall(model="gemma:7b")
 
 
@@ -52,7 +52,7 @@ def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) ->
     )
     mock_ollama_llm.chain.invoke.return_value = mock_response
 
-    result = mock_ollama_llm.call(sample_state)
+    result = mock_ollama_llm.call(sample_state, DocumentType)
 
     mock_ollama_llm.chain.invoke.assert_called_once_with(
         {"text": sample_state.text},
@@ -65,15 +65,17 @@ def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) ->
 
 def test_ollama_llm_chain_creation(mock_ollama_llm: OllamaLLMCall) -> None:
     """Test chain creation in OllamaLLM."""
+    from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
+
     prompt = "Test prompt"
-    mock_ollama_llm.create_chain(prompt)
+    mock_ollama_llm.create_chain(prompt, DocumentType)
     assert mock_ollama_llm.chain is not None
 
 
 def test_ollama_llm_error_handling(mocker: Mock) -> None:
     """Test error handling when Ollama service is not available."""
     mocker.patch(
-        "graphrag.llm.ollama_llm.OllamaLLM",
+        "documentassistent.llm.ollama_llm.OllamaLLM",
         side_effect=ConnectionError,
     )
 
