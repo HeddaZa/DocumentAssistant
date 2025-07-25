@@ -26,7 +26,7 @@ class DocumentType(BaseModel):
     price: float
     date: str
     description: str
-    notes: str
+    notes: str | None
     logs: list[Logs]
 
 
