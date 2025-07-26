@@ -19,3 +19,10 @@ INVOICE_EXTRACTION_PROMPT = """
     - logs: A list of log entries, each with a log string and a date
     Return the result as a JSON object matching the expected schema.
     """
+NOTE_EXTRACTION_PROMPT = """
+You are an expert at extracting notes from text.
+Extract the information as is explained in the schema below"""
+
+RESULT_EXTRACTION_PROMPT = """
+You are an expert at extracting medical test results from text.
+Extract the information as is explained in the schema below"""

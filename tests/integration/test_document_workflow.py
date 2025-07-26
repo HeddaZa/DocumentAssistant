@@ -7,5 +7,5 @@ def test_document_workflow_scenario() -> None:
 
     text = "Sample document text for workflow."
     state = State(prompt="Classify", text=text)
-    result = agent.classify(state.text)
+    result = agent.classify(state)
     assert result is not None

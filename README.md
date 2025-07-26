@@ -32,11 +32,12 @@ I use Ollama but coded an OpenAI option. However, I realised my credit at OpenAI
 - [x] Ollama support
 - [ ] OpenAI integration
 - [x] Langfuse with docker
-- [ ] Langgraph Agent System for classification
-- [ ] Pictures will be classified
-- [ ] Pdfs will be classified
+- [x] Langgraph Agent System for classification
+- [x] Pictures will be classified
+- [x] Pdfs will be classified
 - [ ] Neo4j setup
 - [ ] pipeline from document to graphDB entry
 - [ ] optional: graphRAG (was initial plan but is now optional)
 - [ ] Tax return query system
+- [ ] RAG for tax information
 

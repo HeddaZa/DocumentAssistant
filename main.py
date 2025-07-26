@@ -2,10 +2,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from documentassistent.graph import create_graph
 from documentassistent.input_engineering.input_reader import ImageReader, PDFReader
-from documentassistent.llm.llm_factory import ConfigDict, LLMFactory
 from documentassistent.prompts.prompt_collection import CATEGORISATION_PROMPT
-from documentassistent.structure.pydantic_llm_calls.invoice_call import DocumentType
 from documentassistent.structure.state import State
 from documentassistent.utils.logger import setup_logger
 from load_config import load_config
@@ -30,23 +29,14 @@ def main(path: Path) -> None:
         logger.error("Unsupported file type", extra={"file_suffix": path.suffix})
         return
 
-    config: ConfigDict = {
-        "llm": {
-            "type": "ollama",
-            "model": CONFIG["ollama"]["model"],
-        },
-    }
-
-    llm = LLMFactory.create_llm(config)
-    logger.info("LLM instance created", extra={"llm_type": type(llm).__name__})
-
     state = State(
         prompt=CATEGORISATION_PROMPT,
         text=text,
         result=None,
     )
-    result = llm.call(state, pydantic_object=DocumentType)
-    logger.debug("Full result details: {}", result)
+    graph = create_graph()
+    result = graph.invoke(state)
+    logger.debug("Final state after processing: {}", result)
 
 
 if __name__ == "__main__":

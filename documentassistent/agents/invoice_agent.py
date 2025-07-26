@@ -3,7 +3,7 @@ from documentassistent.prompts.prompt_collection import INVOICE_EXTRACTION_PROMP
 from documentassistent.structure.pydantic_llm_calls.invoice_call import (
     InvoiceExtraction,
 )
-from documentassistent.structure.state import LLMCall, State
+from documentassistent.structure.state import State
 from documentassistent.utils.logger import setup_logger
 from load_config import load_config
 
@@ -35,24 +35,19 @@ class InvoiceAgent:
             extra={"llm_type": type(self.llm).__name__},
         )
 
-    def extract_invoice(self, text: str) -> InvoiceExtraction:
+    def extract_invoice(self, state: State) -> State:
         """Extract invoice information from the input text."""
-        state = State(
-            prompt=INVOICE_EXTRACTION_PROMPT,
-            text=text,
-            result=None,
-        )
-        llm_call = LLMCall(
-            prompt=INVOICE_EXTRACTION_PROMPT,
-            pydantic_object=InvoiceExtraction,
-            state=state,
-        )
-        if llm_call.state is None:
-            msg = "LLMCall.state must not be None"
+        if state is None:
+            msg = "state must not be None"
             raise ValueError(msg)
-        result = self.llm.call(llm_call.state, pydantic_object=InvoiceExtraction)
+        state.prompt = INVOICE_EXTRACTION_PROMPT
+        result = self.llm.call(state, pydantic_object=InvoiceExtraction)
         if not isinstance(result, InvoiceExtraction):
             msg = f"Expected InvoiceExtraction, got {type(result)}"
             raise TypeError(msg)
         logger.debug("Invoice extraction result: {}", result)
-        return result
+        return state.model_copy(
+            update={
+                "invoice_extraction_result": result,
+            },
+        )
