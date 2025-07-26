@@ -49,6 +49,6 @@ class ClassificationAgent:
         logger.debug("Classification result: {}", result)
         return state.model_copy(
             update={
-                "classification_result": result.label,
+                "classification_result": result,
             },
         )

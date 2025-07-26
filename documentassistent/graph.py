@@ -8,7 +8,12 @@ from documentassistent.agents.invoice_agent import InvoiceAgent
 from documentassistent.agents.note_agent import NoteAgent
 from documentassistent.agents.result_agent import ResultAgent
 from documentassistent.structure.state import State
-from documentassistent.utils.logger import logger
+from documentassistent.utils.logger import setup_logger
+
+logger = setup_logger(
+    name="Graph",
+    log_file="logs/graph.log",
+)
 
 
 class AgentNames(Enum):
@@ -46,7 +51,7 @@ def create_graph() -> Any:
     # Conditional routing based on classification_result
     builder.add_conditional_edges(
         AgentNames.CLASSIFICATION.value,
-        lambda state: state["classification_result"],
+        lambda state: state.classification_result.label.value,
         {
             "invoice": AgentNames.INVOICE.value,
             "note": AgentNames.NOTE.value,
