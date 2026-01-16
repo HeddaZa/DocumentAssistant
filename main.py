@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from documentassistent.graph import create_graph
 from documentassistent.input_engineering.input_reader import ImageReader, PDFReader
 from documentassistent.prompts.prompt_collection import CATEGORISATION_PROMPT
+from documentassistent.storage import init_database
 from documentassistent.structure.state import State
 from documentassistent.utils.logger import setup_logger
 from load_config import load_config
@@ -33,13 +34,22 @@ def main(path: Path) -> None:
         prompt=CATEGORISATION_PROMPT,
         text=text,
         result=None,
+        file_path=str(path.absolute()),
     )
     graph = create_graph()
     result = graph.invoke(state)
     logger.debug("Final state after processing: {}", result)
 
+    if result.get("document_id"):
+        logger.success(
+            "Document processed and stored",
+            extra={"document_id": result["document_id"], "file_path": str(path)},
+        )
+
 
 if __name__ == "__main__":
+    init_database(CONFIG["database"]["path"])
+
     path_pdfs = list(Path("data/pdfs/").glob("*.pdf"))
     paths_pictures = list(Path("data/Pictures/").glob("*.jpg"))
 

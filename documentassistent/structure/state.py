@@ -3,6 +3,13 @@ from pydantic import BaseModel
 from documentassistent.structure.pydantic_llm_calls.classification_call import (
     Classification,
 )
+from documentassistent.structure.pydantic_llm_calls.invoice_call import (
+    InvoiceExtraction,
+)
+from documentassistent.structure.pydantic_llm_calls.note_call import NoteExtraction
+from documentassistent.structure.pydantic_llm_calls.result_call import (
+    ResultExtraction,
+)
 
 
 class Document(BaseModel):
@@ -21,3 +28,8 @@ class State(BaseModel):
     classification_result: Classification | None = None
     special_agent_result: str | None = None
     text: str
+    file_path: str | None = None
+    document_id: int | None = None
+    invoice_extraction_result: InvoiceExtraction | None = None
+    note_extraction_result: NoteExtraction | None = None
+    result_extraction_result: ResultExtraction | None = None

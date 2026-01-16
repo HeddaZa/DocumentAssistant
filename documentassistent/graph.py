@@ -7,6 +7,7 @@ from documentassistent.agents.classification_agent import ClassificationAgent
 from documentassistent.agents.invoice_agent import InvoiceAgent
 from documentassistent.agents.note_agent import NoteAgent
 from documentassistent.agents.result_agent import ResultAgent
+from documentassistent.agents.storage_agent import StorageAgent
 from documentassistent.structure.state import State
 from documentassistent.utils.logger import setup_logger
 
@@ -23,6 +24,7 @@ class AgentNames(Enum):
     INVOICE = "invoice_agent"
     NOTE = "note_agent"
     RESULT = "result_agent"
+    STORAGE = "storage_agent"
 
 
 def create_graph() -> Any:
@@ -32,6 +34,7 @@ def create_graph() -> Any:
     invoice_agent = InvoiceAgent()
     note_agent = NoteAgent()
     result_agent = ResultAgent()
+    storage_agent = StorageAgent()
 
     builder = StateGraph(State)
 
@@ -45,6 +48,7 @@ def create_graph() -> Any:
     )
     builder.add_node(AgentNames.NOTE.value, note_agent.extract_note)
     builder.add_node(AgentNames.RESULT.value, result_agent.extract_result)
+    builder.add_node(AgentNames.STORAGE.value, storage_agent.store_results)
 
     builder.set_entry_point(AgentNames.CLASSIFICATION.value)
 
@@ -59,10 +63,13 @@ def create_graph() -> Any:
         },
     )
 
-    # Terminal transitions
-    builder.add_edge(AgentNames.INVOICE.value, END)
-    builder.add_edge(AgentNames.NOTE.value, END)
-    builder.add_edge(AgentNames.RESULT.value, END)
+    # All extraction agents flow to storage
+    builder.add_edge(AgentNames.INVOICE.value, AgentNames.STORAGE.value)
+    builder.add_edge(AgentNames.NOTE.value, AgentNames.STORAGE.value)
+    builder.add_edge(AgentNames.RESULT.value, AgentNames.STORAGE.value)
+
+    # Storage is the terminal node
+    builder.add_edge(AgentNames.STORAGE.value, END)
 
     graph = builder.compile()
     logger.success("StateGraph created successfully. 🎉")

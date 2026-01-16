@@ -3,6 +3,9 @@ paths:
   pdfs_dir: ${data_dir}/pdfs
   pictures_dir: ${data_dir}/Pictures
 
+database:
+  path: data/extractions.db
+
 ollama:
  name: gemma
  model: gemma:7b
