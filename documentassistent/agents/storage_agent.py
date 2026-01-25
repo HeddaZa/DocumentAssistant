@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
     from documentassistent.structure.state import BaseWorkflowState
 
+from documentassistent.exceptions import FileWriteError
 from documentassistent.storage.repository import DocumentRepository, FileMetadata
 from documentassistent.structure.pydantic_llm_calls.classification_call import (
     DocumentType,
@@ -146,10 +147,12 @@ class StorageAgent:
                     "renamed_path": renamed_path,
                 },
             )
-        except OSError:
+        except OSError as e:
+            msg = f"Failed to rename file for document {document_id}"
             logger.exception(
                 "Failed to rename file, document saved but path not updated",
                 extra={"document_id": document_id},
             )
+            raise FileWriteError(msg) from e
 
         return state.model_copy(update={"document_id": document_id})

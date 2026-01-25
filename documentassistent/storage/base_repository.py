@@ -4,7 +4,7 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from typing import Any, Generic, TypeVar
 
-from documentassistent.exceptions import DatabaseError
+from documentassistent.exceptions import DatabaseError, RecordNotFoundError
 from documentassistent.storage.database import get_session
 from documentassistent.utils.logger import setup_logger
 
@@ -51,6 +51,14 @@ class BaseRepository(Generic[T]):
                 session.query(self.model_class).filter_by(id=entity_id).first()
             )
             return result
+
+    def get_by_id_or_raise(self, entity_id: int) -> T:
+        """Retrieve entity by ID or raise RecordNotFoundError."""
+        result = self.get_by_id(entity_id)
+        if result is None:
+            msg = f"{self.model_class.__name__} with id={entity_id} not found"
+            raise RecordNotFoundError(msg)
+        return result
 
     def get_by_field(self, **filters: Any) -> T | None:
         """Retrieve first entity matching filters."""

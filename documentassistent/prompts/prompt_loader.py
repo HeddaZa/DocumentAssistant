@@ -6,7 +6,7 @@ from typing import Any, cast
 
 import yaml
 
-from documentassistent.exceptions import PromptLoadError
+from documentassistent.exceptions import PromptLoadError, ThisFileNotFoundError
 from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(name="PromptLoader", log_file="logs/prompt_loader.log")
@@ -20,7 +20,7 @@ def load_prompt_config(prompt_name: str) -> dict[str, Any]:
     if not prompt_path.exists():
         msg = f"Prompt file not found: {prompt_path}"
         logger.error(msg)
-        raise FileNotFoundError(msg)
+        raise ThisFileNotFoundError(msg)
 
     try:
         with prompt_path.open() as f:

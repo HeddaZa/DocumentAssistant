@@ -5,6 +5,7 @@ from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from documentassistent.exceptions import DatabaseConnectionError
 from documentassistent.storage.models import Base
 from documentassistent.utils.logger import setup_logger
 
@@ -40,5 +41,5 @@ def get_session() -> Session:
     """Get a database session."""
     if _SessionLocal is None:
         msg = "Database not initialized. Call init_database() first."
-        raise RuntimeError(msg)
+        raise DatabaseConnectionError(msg)
     return _SessionLocal()

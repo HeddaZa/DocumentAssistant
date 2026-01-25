@@ -5,6 +5,9 @@ from typing import Literal
 
 import yaml
 from pydantic import BaseModel, Field
+from pydantic import ValidationError as PydanticValidationError
+
+from documentassistent.exceptions import ConfigurationError
 
 
 class LLMConfig(BaseModel):
@@ -120,13 +123,22 @@ class ConfigManager:
         if self._config is None or self._config_path != config_path:
             config_file = Path(config_path)
             if config_file.exists():
-                with config_file.open() as f:
-                    data = yaml.safe_load(f) or {}
+                try:
+                    with config_file.open() as f:
+                        data = yaml.safe_load(f) or {}
+                except Exception as e:
+                    msg = f"Failed to read configuration file: {config_path}"
+                    raise ConfigurationError(msg) from e
             else:
                 # Use defaults if file doesn't exist
                 data = {}
 
-            self._config = AppConfig(**data)
+            try:
+                self._config = AppConfig(**data)
+            except PydanticValidationError as e:
+                msg = f"Configuration validation failed: {e}"
+                raise ConfigurationError(msg) from e
+
             self._config_path = config_path
 
         return self._config
