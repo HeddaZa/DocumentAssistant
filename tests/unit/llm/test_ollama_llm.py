@@ -16,7 +16,7 @@ def mock_ollama_llm(mocker: Mock) -> OllamaLLMCall:
 @pytest.fixture
 def sample_state() -> State:
     """Fixture to create a sample state."""
-    return State(prompt="Test prompt", text="This is a test document", result=None)
+    return State(prompt="Test prompt", text="This is a test document")
 
 
 def test_ollama_llm_initialization() -> None:

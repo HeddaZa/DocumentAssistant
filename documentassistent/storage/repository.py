@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from documentassistent.storage.database import get_session
+from documentassistent.storage.base_repository import BaseRepository
 from documentassistent.storage.models import (
     Document,
     InvoiceExtraction,
@@ -42,8 +42,12 @@ class FileMetadata:
     type: str
 
 
-class DocumentRepository:
+class DocumentRepository(BaseRepository[Document]):
     """Repository for managing document storage operations."""
+
+    def __init__(self) -> None:
+        """Initialize DocumentRepository."""
+        super().__init__(Document)
 
     def save_document(
         self,
@@ -52,8 +56,7 @@ class DocumentRepository:
         text_content: str | None = None,
     ) -> int:
         """Save document metadata and return the document ID."""
-        session = get_session()
-        try:
+        with self._session() as session:
             document = Document(
                 original_path=file_metadata.path,
                 file_hash=file_metadata.hash,
@@ -65,7 +68,7 @@ class DocumentRepository:
                 text_content=text_content,
             )
             session.add(document)
-            session.commit()
+            session.flush()
             session.refresh(document)
             doc_id: int = document.id  # type: ignore[assignment]
             logger.info(
@@ -76,23 +79,15 @@ class DocumentRepository:
                 },
             )
             return doc_id
-        finally:
-            session.close()
 
     def update_renamed_path(self, document_id: int, renamed_path: str) -> None:
         """Update the renamed path for a document."""
-        session = get_session()
-        try:
-            document = session.query(Document).filter_by(id=document_id).first()
-            if document:
-                document.renamed_path = renamed_path  # type: ignore[assignment]
-                session.commit()
-                logger.info(
-                    "Document renamed path updated",
-                    extra={"document_id": document_id, "renamed_path": renamed_path},
-                )
-        finally:
-            session.close()
+        updated = self.update_by_id(document_id, renamed_path=renamed_path)
+        if updated:
+            logger.info(
+                "Document renamed path updated",
+                extra={"document_id": document_id, "renamed_path": renamed_path},
+            )
 
     def save_invoice_extraction(
         self,
@@ -100,8 +95,7 @@ class DocumentRepository:
         extraction: InvoiceExtractionPydantic,
     ) -> None:
         """Save invoice extraction data."""
-        session = get_session()
-        try:
+        with self._session() as session:
             invoice = InvoiceExtraction(
                 document_id=document_id,
                 type=extraction.type,
@@ -121,13 +115,10 @@ class DocumentRepository:
                 )
                 session.add(log)
 
-            session.commit()
             logger.info(
                 "Invoice extraction saved",
                 extra={"document_id": document_id, "price": extraction.price},
             )
-        finally:
-            session.close()
 
     def save_note_extraction(
         self,
@@ -135,8 +126,7 @@ class DocumentRepository:
         extraction: NoteExtractionPydantic,
     ) -> None:
         """Save note extraction data."""
-        session = get_session()
-        try:
+        with self._session() as session:
             note = NoteExtraction(
                 document_id=document_id,
                 author=extraction.author,
@@ -154,10 +144,7 @@ class DocumentRepository:
                     )
                     session.add(tag)
 
-            session.commit()
             logger.info("Note extraction saved", extra={"document_id": document_id})
-        finally:
-            session.close()
 
     def save_result_extraction(
         self,
@@ -165,8 +152,7 @@ class DocumentRepository:
         extraction: ResultExtractionPydantic,
     ) -> None:
         """Save medical test result extraction data."""
-        session = get_session()
-        try:
+        with self._session() as session:
             result = ResultExtraction(
                 document_id=document_id,
                 patient_name=extraction.patient_name,
@@ -187,7 +173,6 @@ class DocumentRepository:
                 )
                 session.add(test_result)
 
-            session.commit()
             logger.info(
                 "Result extraction saved",
                 extra={
@@ -195,21 +180,36 @@ class DocumentRepository:
                     "test_count": len(extraction.test_results),
                 },
             )
-        finally:
-            session.close()
 
     def get_document_by_hash(self, file_hash: str) -> Document | None:
         """Retrieve a document by its file hash."""
-        session = get_session()
-        try:
-            return session.query(Document).filter_by(file_hash=file_hash).first()
-        finally:
-            session.close()
+        return self.get_by_field(file_hash=file_hash)
 
     def get_document_by_id(self, document_id: int) -> Document | None:
         """Retrieve a document by its ID."""
-        session = get_session()
-        try:
-            return session.query(Document).filter_by(id=document_id).first()
-        finally:
-            session.close()
+        return self.get_by_id(document_id)
+
+    def list_documents(
+        self,
+        limit: int | None = None,
+        offset: int = 0,
+        classification_label: str | None = None,
+    ) -> list[Document]:
+        """List documents with optional filtering and pagination."""
+        if classification_label:
+            return self.list_by_field(
+                limit=limit,
+                offset=offset,
+                classification_label=classification_label,
+            )
+        return self.list_all(limit=limit, offset=offset)
+
+    def count_documents(self, classification_label: str | None = None) -> int:
+        """Count total documents, optionally filtered by classification."""
+        if classification_label:
+            return self.count(classification_label=classification_label)
+        return self.count()
+
+    def delete_document(self, document_id: int) -> bool:
+        """Delete a document and its related extractions. Returns True if deleted."""
+        return self.delete_by_id(document_id)

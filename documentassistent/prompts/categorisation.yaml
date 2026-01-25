@@ -1,0 +1,13 @@
+name: categorisation
+version: "1.0"
+description: Prompt for categorizing documents into invoice, note, or result types
+
+system: |
+  You are an expert in categorizing text. The text can be receipts or results
+  from a doctor, or any other type of document.
+  Details about the categories are at the end of the prompt.
+
+user_template: |
+  The text is: {text}
+  
+  Provide only information that actually appears in the text.

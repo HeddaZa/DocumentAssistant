@@ -4,6 +4,7 @@ import pytest
 from pydantic import BaseModel
 from pytest_mock import MockFixture
 
+from documentassistent.exceptions import LLMError
 from documentassistent.llm.chain_llm import ChainLLM
 from documentassistent.structure.state import State
 
@@ -15,7 +16,7 @@ class DummyPydantic(BaseModel):
 def test_chain_creation() -> None:
     """Test the creation of a chain with a prompt and pydantic object."""
     llm = ChainLLM()
-    with pytest.raises(ValueError, match="LLM not initialized"):
+    with pytest.raises(LLMError, match="LLM not initialized"):
         llm.create_chain("test prompt", DummyPydantic)
 
 
@@ -50,7 +51,7 @@ def test_call_creates_chain(mock_llm: ChainLLM, mocker: MockFixture) -> None:
     mocker.patch.object(mock_llm, "create_chain")
     mock_llm.chain = mock_chain
 
-    state = State(prompt="test prompt", text="test text", result=None)
+    state = State(prompt="test prompt", text="test text")
     result = mock_llm.call(state, DocumentType)
 
     mock_chain.invoke.assert_called_once_with(

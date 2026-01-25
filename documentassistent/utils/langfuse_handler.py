@@ -34,12 +34,18 @@ class LangfuseHandler:
         return self.handler
 
     def trace(self) -> Callable[[Any], Any]:
-        """Decorator to add Langfuse callback and static tags to LLM chain calls."""
+        """Decorator to add Langfuse callback to LLM chain calls."""
 
         def decorator(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
             @wraps(func)
             def wrapper(*args: Any, **kwargs: Any) -> Any:
-                # Remove all config logic
+                # Add Langfuse callback handler to config
+                if "config" not in kwargs:
+                    kwargs["config"] = {}
+                if "callbacks" not in kwargs["config"]:
+                    kwargs["config"]["callbacks"] = []
+                kwargs["config"]["callbacks"].append(self.handler)
+
                 return func(*args, **kwargs)
 
             return wrapper

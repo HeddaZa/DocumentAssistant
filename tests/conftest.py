@@ -6,7 +6,7 @@ from documentassistent.structure.state import State
 @pytest.fixture
 def sample_state() -> State:
     """Create a sample State object for testing purposes."""
-    return State(prompt="test prompt", text="test text", result=None)
+    return State(prompt="test prompt", text="test text")
 
 
 @pytest.fixture

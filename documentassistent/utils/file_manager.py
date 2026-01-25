@@ -4,6 +4,7 @@ import hashlib
 import shutil
 from pathlib import Path
 
+from documentassistent.exceptions import FileWriteError
 from documentassistent.utils.logger import setup_logger
 
 logger = setup_logger(
@@ -66,9 +67,10 @@ def rename_file_with_id(
             },
         )
         return str(new_path)
-    except Exception:
+    except Exception as e:
         logger.exception(
             "Failed to rename file",
             extra={"document_id": document_id},
         )
-        raise
+        error_msg = f"Failed to rename file for document {document_id}"
+        raise FileWriteError(error_msg) from e

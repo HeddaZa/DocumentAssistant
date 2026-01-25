@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, cast
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from documentassistent.structure.state import State
+    from documentassistent.structure.state import BaseWorkflowState
 
 from documentassistent.storage.repository import DocumentRepository, FileMetadata
 from documentassistent.structure.pydantic_llm_calls.classification_call import (
@@ -36,7 +36,7 @@ class StorageAgent:
 
     def _get_extraction_info(
         self,
-        state: State,
+        state: BaseWorkflowState,
         classification_label: DocumentType,
         document_id: int,
     ) -> tuple[str, str]:
@@ -83,13 +83,14 @@ class StorageAgent:
         logger.warning("No extraction result found", extra={"attr": attr_name})
         return default
 
-    def store_results(self, state: State) -> State:
+    def store_results(self, state: BaseWorkflowState) -> BaseWorkflowState:
         """Store document and extraction results, rename file with document ID."""
         if not state.file_path:
             logger.warning("No file_path in state, skipping storage")
             return state
 
-        if not state.classification_result:
+        classification_result = getattr(state, "classification_result", None)
+        if not classification_result:
             logger.warning("No classification_result in state, skipping storage")
             return state
 
@@ -118,13 +119,13 @@ class StorageAgent:
 
         document_id = self.repository.save_document(
             file_metadata=file_metadata,
-            classification=state.classification_result,
+            classification=classification_result,
             text_content=state.text,
         )
 
         date_for_filename, type_for_filename = self._get_extraction_info(
             state,
-            state.classification_result.label,
+            classification_result.label,
             document_id,
         )
 

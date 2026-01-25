@@ -57,7 +57,6 @@ def test_full_llm_pipeline(config: ConfigDict) -> None:
     test_state = State(
         prompt="Classify this document.",
         text="This is a medical receipt for 100 EUR from Dr. Smith.",
-        result=None,
         classification_result=None,
     )
 
@@ -79,7 +78,6 @@ def test_llm_error_handling(config: ConfigDict) -> None:
     empty_state = State(
         prompt="Classify this.",
         text="",
-        result=None,
         classification_result=None,
     )
 
@@ -96,7 +94,6 @@ def test_long_input_handling(config: ConfigDict) -> None:
     test_state = State(
         prompt="Summarize and classify this text.",
         text=long_text,
-        result=None,
         classification_result=None,
     )
 
