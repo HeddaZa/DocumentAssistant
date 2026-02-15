@@ -35,9 +35,8 @@ I use Ollama but coded an OpenAI option. However, I realised my credit at OpenAI
 - [x] Langgraph Agent System for classification
 - [x] Pictures will be classified
 - [x] Pdfs will be classified
-- [ ] Neo4j setup
-- [ ] pipeline from document to graphDB entry
+- [x] pipeline from document to SQLite DB entry
 - [ ] optional: graphRAG (was initial plan but is now optional)
-- [ ] Tax return query system
-- [ ] RAG for tax information
+- [ ] optional: Tax return query system
+- [ ] optional: RAG for tax information
 
