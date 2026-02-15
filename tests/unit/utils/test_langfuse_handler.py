@@ -1,3 +1,5 @@
+from typing import Any
+
 from langfuse.callback import CallbackHandler
 
 from documentassistent.utils.langfuse_handler import LangfuseHandler
@@ -12,7 +14,7 @@ def test_langfuse_handler_trace() -> None:
 
     # Test that the trace decorator wraps and returns the function result
     @handler.trace()
-    def dummy(x: int) -> int:
+    def dummy(x: int, **_kwargs: Any) -> int:
         return x + 1
 
     assert dummy(2) == EXPECTED_RESULT

@@ -11,9 +11,28 @@ from documentassistent.structure.pydantic_llm_calls.classification_call import (
 )
 from documentassistent.structure.state import State
 
+
+def is_ollama_running() -> bool:
+    """Check if Ollama server is running."""
+    try:
+        ollama_path = shutil.which("ollama")
+        if ollama_path is None:
+            return False
+        result = subprocess.run(
+            [ollama_path, "list"],
+            capture_output=True,
+            timeout=2,
+            check=False,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
+    else:
+        return result.returncode == 0
+
+
 pytestmark = pytest.mark.skipif(
-    shutil.which("ollama") is None,
-    reason="Ollama is not installed",
+    not is_ollama_running(),
+    reason="Ollama is not running",
 )
 
 
@@ -23,9 +42,11 @@ class OllamaNotInstalledError(RuntimeError):
         super().__init__(msg)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def ensure_ollama_model() -> None:
     """Ensure Ollama model is available."""
+    if not is_ollama_running():
+        pytest.skip("Ollama is not running")
     ollama_path = shutil.which("ollama")
     if ollama_path is None:
         raise OllamaNotInstalledError

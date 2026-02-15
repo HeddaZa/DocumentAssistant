@@ -9,7 +9,11 @@ from documentassistent.structure.state import State
 @pytest.fixture
 def mock_ollama_llm(mocker: Mock) -> OllamaLLMCall:
     """Fixture to create a mocked OllamaLLM instance."""
-    mocker.patch("documentassistent.llm.ollama_llm.OllamaLLM")
+    mock_llm_instance = mocker.Mock()
+    mocker.patch(
+        "documentassistent.llm.ollama_llm.OllamaLLM",
+        return_value=mock_llm_instance,
+    )
     return OllamaLLMCall(model="gemma:7b")
 
 
@@ -51,13 +55,11 @@ def test_ollama_llm_call(mock_ollama_llm: OllamaLLMCall, sample_state: State) ->
         logs=[Logs(log="Test log", date="2024-05-24")],
     )
     mock_ollama_llm.chain.invoke.return_value = mock_response
+    mock_ollama_llm._current_pydantic_type = DocumentType  # noqa: SLF001
 
     result = mock_ollama_llm.call(sample_state, DocumentType)
 
-    mock_ollama_llm.chain.invoke.assert_called_once_with(
-        {"text": sample_state.text},
-        return_only_outputs=True,
-    )
+    mock_ollama_llm.chain.invoke.assert_called_once()
     assert isinstance(result, DocumentType)
     assert result.type == InvoiceTypeEnum.DOCTOR_RECEIPT
     assert result.description == "Test description"

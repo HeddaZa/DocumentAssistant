@@ -121,10 +121,10 @@ def test_prompt_exception_hierarchy() -> None:
 
 def test_exception_messages() -> None:
     """Test that exceptions can be raised with custom messages."""
-    with pytest.raises(LLMError, match=LLMError.CUSTOM_MSG):
+    with pytest.raises(LLMError, match="Custom error message"):
         raise LLMError(LLMError.CUSTOM_MSG)
 
-    with pytest.raises(StateValidationError, match=StateValidationError.CUSTOM_MSG):
+    with pytest.raises(StateValidationError, match="State is invalid"):
         raise StateValidationError(StateValidationError.DEFAULT_MSG)
 
 

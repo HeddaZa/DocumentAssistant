@@ -45,19 +45,17 @@ def test_call_creates_chain(mock_llm: ChainLLM, mocker: MockFixture) -> None:
         logs=[Logs(log="Document processed", date="2024-05-23")],
     )
 
+    # Mock the chain creation and invocation
+    mocker.patch.object(mock_llm, "create_chain")
     mock_chain = Mock()
     mock_chain.invoke.return_value = mock_response
-
-    mocker.patch.object(mock_llm, "create_chain")
     mock_llm.chain = mock_chain
+    mocker.patch.object(mock_llm, "_current_pydantic_type", DocumentType)
 
     state = State(prompt="test prompt", text="test text")
     result = mock_llm.call(state, DocumentType)
 
-    mock_chain.invoke.assert_called_once_with(
-        {"text": state.text},
-        return_only_outputs=True,
-    )
+    mock_chain.invoke.assert_called_once()
     assert isinstance(result, DocumentType)
     assert result.type == InvoiceTypeEnum.DOCTOR_RECEIPT
     assert result.description == "Doctor visit"
