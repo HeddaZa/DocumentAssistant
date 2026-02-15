@@ -1,5 +1,6 @@
 from typing import ClassVar, TypedDict
 
+from documentassistent.exceptions import UnsupportedProviderError
 from documentassistent.llm.base_llm import BaseLLM
 from documentassistent.llm.ollama_llm import OllamaLLMCall
 from documentassistent.llm.openai_llm import OpenAILLM
@@ -38,16 +39,11 @@ class LLMFactory:
         if not llm_class:
             msg = f"Unsupported LLM type: {llm_type!r}"
             logger.error(msg)
-            raise ValueError(msg)
+            raise UnsupportedProviderError(msg)
 
-        if llm_type == "ollama":
-            llm = llm_class(model=config["llm"]["model"])
-        elif llm_type == "openai":
-            llm = llm_class()
-        else:
-            msg = f"LLM type {llm_type!r} is not implemented in the factory."
-            logger.error(msg)
-            raise ValueError(msg)
+        # Create instance with optional model parameter
+        model = config["llm"].get("model")
+        llm = llm_class(model=model) if model else llm_class()
 
         logger.info("Created LLM instance", extra={"type": llm_type})
         return llm

@@ -1,0 +1,7 @@
+name: note_extraction
+version: "1.0"
+description: Prompt for extracting structured information from notes
+
+system: |
+  You are an expert at extracting notes from text.
+  Extract the information as is explained in the schema below.

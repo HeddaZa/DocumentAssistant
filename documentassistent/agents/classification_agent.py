@@ -1,20 +1,18 @@
-from documentassistent.llm.llm_factory import ConfigDict, LLMFactory
-from documentassistent.prompts.prompt_collection import CATEGORISATION_PROMPT
+from documentassistent.agents.base_agent import BaseAgent, validate_state
+from documentassistent.llm.base_llm import BaseLLM
 from documentassistent.structure.pydantic_llm_calls.classification_call import (
     Classification,
 )
-from documentassistent.structure.state import State
+from documentassistent.structure.state import BaseWorkflowState, ClassificationState
 from documentassistent.utils.logger import setup_logger
-from load_config import load_config
 
 logger = setup_logger(
     name="ClassificationAgent",
     log_file="logs/classification_agent.log",
 )
-CONFIG = load_config("config.yaml")
 
 
-class ClassificationAgent:
+class ClassificationAgent(BaseAgent):
     """
     Agent for document classification using LLMFactory and custom prompt/structure.
 
@@ -22,33 +20,13 @@ class ClassificationAgent:
     Pydantic structure for classification tasks.
     """
 
-    def __init__(self) -> None:
-        config: ConfigDict = {
-            "llm": {
-                "type": "ollama",
-                "model": CONFIG["ollama"]["model"],
-            },
-        }
-        self.llm = LLMFactory.create_llm(config)
-        logger.info(
-            "ClassificationAgent initialized with LLM",
-            extra={"llm_type": type(self.llm).__name__},
-        )
+    def __init__(self, llm: BaseLLM | None = None) -> None:
+        super().__init__(agent_name="ClassificationAgent", logger=logger, llm=llm)
 
-    def classify(self, state: State) -> State:
+    @validate_state
+    def classify(self, state: BaseWorkflowState) -> ClassificationState:
         """Classify the input text and return a Classification result."""
-        if state is None:
-            msg = "state must not be None"
-            logger.error(msg)
-            raise ValueError(msg)
-        state.prompt = CATEGORISATION_PROMPT
+        state = self._convert_state(state, ClassificationState)
         result = self.llm.call(state, pydantic_object=Classification)
-        if not isinstance(result, Classification):
-            msg = f"Expected Classification, got {type(result)}"
-            raise TypeError(msg)
         logger.debug("Classification result: {}", result)
-        return state.model_copy(
-            update={
-                "classification_result": result,
-            },
-        )
+        return state.model_copy(update={"classification_result": result})

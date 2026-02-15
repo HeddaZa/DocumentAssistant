@@ -32,6 +32,8 @@ pydantic = "^2.5.3"
 langfuse = "^2.60.7"
 pypdf2 = "^3.0.1"
 langgraph = "^0.5.4"
+sqlalchemy = "^2.0.0"
+pyyaml = "^6.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.11.7"

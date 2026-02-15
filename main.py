@@ -2,10 +2,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from documentassistent.graph import create_graph
 from documentassistent.input_engineering.input_reader import ImageReader, PDFReader
-from documentassistent.prompts.prompt_collection import CATEGORISATION_PROMPT
-from documentassistent.structure.state import State
+from documentassistent.pipeline import create_pipeline
+from documentassistent.storage import init_database
+from documentassistent.structure.state import ClassificationState
 from documentassistent.utils.logger import setup_logger
 from load_config import load_config
 
@@ -20,26 +20,34 @@ def main(path: Path) -> None:
     if path.suffix.lower() in [".pdf"]:
         reader_pdf = PDFReader()
         text = reader_pdf.read(str(path)).content
-        logger.info("PDF file processed", extra={"file_path": str(path)})
+        logger.info("PDF file processed, {}", path)
     elif path.suffix.lower() in [".png", ".jpg", ".jpeg"]:
         reader_image = ImageReader()
         text = reader_image.read(str(path)).content
-        logger.info("Image file processed", extra={"file_path": str(path)})
+        logger.info("Image file processed, {}", path)
     else:
-        logger.error("Unsupported file type", extra={"file_suffix": path.suffix})
+        logger.error("Unsupported file type, {}", path.suffix)
         return
 
-    state = State(
-        prompt=CATEGORISATION_PROMPT,
+    state = ClassificationState(
         text=text,
-        result=None,
+        file_path=str(path.absolute()),
     )
-    graph = create_graph()
-    result = graph.invoke(state)
+    pipeline = create_pipeline()
+    result = pipeline.invoke(state)
     logger.debug("Final state after processing: {}", result)
+
+    if hasattr(result, "document_id") and result.document_id:
+        logger.success(
+            "Document processed and stored, ID: {}, Path: {}",
+            result.document_id,
+            str(path),
+        )
 
 
 if __name__ == "__main__":
+    init_database(CONFIG["database"]["path"])
+
     path_pdfs = list(Path("data/pdfs/").glob("*.pdf"))
     paths_pictures = list(Path("data/Pictures/").glob("*.jpg"))
 

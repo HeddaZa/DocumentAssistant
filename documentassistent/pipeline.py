@@ -1,7 +1,8 @@
-from enum import Enum
+"""Document processing pipeline using LangChain LCEL."""
+
 from typing import Any
 
-from langgraph.graph import END, StateGraph
+from langchain_core.runnables import RunnableBranch, RunnableLambda
 
 from documentassistent.agents.classification_agent import ClassificationAgent
 from documentassistent.agents.invoice_agent import InvoiceAgent
@@ -14,23 +15,13 @@ from documentassistent.utils.logger import setup_logger
 from load_config import load_config
 
 logger = setup_logger(
-    name="Graph",
-    log_file="logs/graph.log",
+    name="Pipeline",
+    log_file="logs/pipeline.log",
 )
 CONFIG = load_config("config.yaml")
 
 
-class AgentNames(Enum):
-    """Enumeration for agent names used in the graph."""
-
-    CLASSIFICATION = "classification_agent"
-    INVOICE = "invoice_agent"
-    NOTE = "note_agent"
-    RESULT = "result_agent"
-    STORAGE = "storage_agent"
-
-
-def create_graph(
+def create_pipeline(
     classification_agent: ClassificationAgent | None = None,
     invoice_agent: InvoiceAgent | None = None,
     note_agent: NoteAgent | None = None,
@@ -38,7 +29,7 @@ def create_graph(
     storage_agent: StorageAgent | None = None,
 ) -> Any:
     """
-    Create a StateGraph with agents.
+    Create a document processing pipeline using LangChain LCEL.
 
     Args:
         classification_agent: Optional classification agent. If None, creates default.
@@ -48,19 +39,20 @@ def create_graph(
         storage_agent: Optional storage agent. If None, creates default.
 
     Returns:
-        Compiled StateGraph ready for execution.
+        Compiled LCEL chain ready for execution.
 
     Example:
         # Production usage with defaults
-        graph = create_graph()
+        pipeline = create_pipeline()
+        result = pipeline.invoke(state)
 
         # Testing with mock agents
-        graph = create_graph(
+        pipeline = create_pipeline(
             classification_agent=MockClassificationAgent(),
             storage_agent=MockStorageAgent(),
         )
     """
-    logger.info("Creating StateGraph with agents... 🧩")
+    logger.info("Creating LCEL pipeline... 🧩")
 
     # Create default agents if not provided
     if (
@@ -100,52 +92,49 @@ def create_graph(
     if storage_agent is None:
         storage_agent = StorageAgent()
 
-    builder = StateGraph(ClassificationState)
+    # Helper functions for type-safe branching
+    def is_invoice(state: ClassificationState) -> bool:
+        """Check if state is classified as invoice."""
+        return (
+            state.classification_result is not None
+            and state.classification_result.label.value == "invoice"
+        )
 
-    builder.add_node(
-        AgentNames.CLASSIFICATION.value,
-        classification_agent.classify,
+    def is_note(state: ClassificationState) -> bool:
+        """Check if state is classified as note."""
+        return (
+            state.classification_result is not None
+            and state.classification_result.label.value == "note"
+        )
+
+    # Wrap agent methods as RunnableLambda
+    classification_runnable = RunnableLambda(classification_agent.classify)
+    invoice_runnable = RunnableLambda(invoice_agent.extract_invoice)
+    note_runnable = RunnableLambda(note_agent.extract_note)
+    result_runnable = RunnableLambda(result_agent.extract_result)
+    storage_runnable = RunnableLambda(storage_agent.store_results)
+
+    # Create conditional branch for extraction based on classification
+    extraction_branch: RunnableBranch[ClassificationState, ClassificationState] = (
+        RunnableBranch(
+            (is_invoice, invoice_runnable),
+            (is_note, note_runnable),
+            result_runnable,
+        )
     )
-    builder.add_node(
-        AgentNames.INVOICE.value,
-        invoice_agent.extract_invoice,
-    )
-    builder.add_node(AgentNames.NOTE.value, note_agent.extract_note)
-    builder.add_node(AgentNames.RESULT.value, result_agent.extract_result)
-    builder.add_node(AgentNames.STORAGE.value, storage_agent.store_results)
 
-    builder.set_entry_point(AgentNames.CLASSIFICATION.value)
+    # Create the full pipeline: classify -> extract -> store
+    pipeline = classification_runnable | extraction_branch | storage_runnable
 
-    # Conditional routing based on classification_result
-    builder.add_conditional_edges(
-        AgentNames.CLASSIFICATION.value,
-        lambda state: state.classification_result.label.value,
-        {
-            "invoice": AgentNames.INVOICE.value,
-            "note": AgentNames.NOTE.value,
-            "result": AgentNames.RESULT.value,
-        },
-    )
-
-    # All extraction agents flow to storage
-    builder.add_edge(AgentNames.INVOICE.value, AgentNames.STORAGE.value)
-    builder.add_edge(AgentNames.NOTE.value, AgentNames.STORAGE.value)
-    builder.add_edge(AgentNames.RESULT.value, AgentNames.STORAGE.value)
-
-    # Storage is the terminal node
-    builder.add_edge(AgentNames.STORAGE.value, END)
-
-    graph = builder.compile()
-    logger.success("StateGraph created successfully. 🎉")
-    return graph
+    logger.success("LCEL pipeline created successfully. 🎉")
+    return pipeline
 
 
 if __name__ == "__main__":
-    # Example usage of the graph
-    graph = create_graph()
+    # Example usage of the pipeline
+    pipeline = create_pipeline()
     initial_state = ClassificationState(
-        prompt="Classify this document",
         text="Sample text for classification. Doctors receipt of 100EUR",
     )
-    result_state = graph.invoke(initial_state)
+    result_state = pipeline.invoke(initial_state)
     logger.info("Final state after processing: {}", result_state)

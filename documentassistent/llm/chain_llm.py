@@ -9,6 +9,7 @@ from langchain.prompts import PromptTemplate
 if TYPE_CHECKING:
     from langchain.schema.runnable import RunnableSequence
 
+from documentassistent.exceptions import LLMError, LLMResponseError
 from documentassistent.llm.base_llm import BaseLLM
 from documentassistent.structure.state import State
 from documentassistent.utils.langfuse_handler import LangfuseHandler
@@ -19,13 +20,6 @@ logger = setup_logger(name="ChainLLM", log_file="logs/chain_llm.log")
 langfuse = LangfuseHandler()
 
 
-class ChainCreationError(Exception):
-    """Custom exception for chain creation errors."""
-
-    def __init__(self, message: str) -> None:
-        super().__init__(message)
-
-
 class ChainLLM(BaseLLM):
     """Base class for LLM chains."""
 
@@ -34,12 +28,13 @@ class ChainLLM(BaseLLM):
         super().__init__()
         self.llm: Any = None
         self.chain: RunnableSequence[dict[str, str], Any] | None = None
+        self._current_pydantic_type: type | None = None
 
     def create_chain(self, prompt: str, pydantic_object: type) -> None:
         """Create a chain for the LLM with the given prompt and pydantic object."""
         if not self.llm:
             msg = "LLM not initialized"
-            raise ValueError(msg)
+            raise LLMError(msg)
 
         try:
             pydantic_parser: PydanticOutputParser = PydanticOutputParser(
@@ -61,25 +56,27 @@ class ChainLLM(BaseLLM):
         except Exception as e:
             msg = f"Chain creation failed: {e!s}"
             logger.exception(msg)
-            raise ChainCreationError(msg) from e
+            raise LLMError(msg) from e
 
     @langfuse.trace()
-    def call(self, state: State, pydantic_object: type) -> Any:
+    def call(self, state: State, pydantic_object: type, **kwargs: Any) -> Any:
         """Call the LLM with a prompt, state, and pydantic object."""
-        if not self.chain:
+        # Recreate chain if pydantic_object changed or chain doesn't exist
+        if not self.chain or self._current_pydantic_type != pydantic_object:
             self.create_chain(state.prompt, pydantic_object)
+            self._current_pydantic_type = pydantic_object
             if not self.chain:
                 msg = "Chain creation failed to initialize chain"
-                raise ChainCreationError(msg)
+                raise LLMError(msg)
 
         logger.debug("Calling chain with state", extra={"state": state})
         response = self.chain.invoke(
             {"text": state.text},
-            return_only_outputs=True,
+            **kwargs,
         )
         if not isinstance(response, pydantic_object):
             msg = f"Unexpected response type: {type(response)}"
             logger.error(msg)
-            raise TypeError(msg)
+            raise LLMResponseError(msg)
 
         return response

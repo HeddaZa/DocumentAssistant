@@ -13,6 +13,7 @@ def test_pdf_reader_reads_pdf() -> None:
     with (
         patch("PyPDF2.PdfReader", return_value=mock_pdf_reader),
         patch("pathlib.Path.open", MagicMock()),
+        patch("pathlib.Path.exists", return_value=True),
     ):
         doc = pdf_reader.read("dummy.pdf")
     assert isinstance(doc, Document)
@@ -30,6 +31,7 @@ def test_image_reader_reads_image() -> None:
             "pytesseract.image_to_string",
             return_value="Image text",
         ),
+        patch("pathlib.Path.exists", return_value=True),
     ):
         doc = image_reader.read("dummy.jpg")
     assert isinstance(doc, Document)
