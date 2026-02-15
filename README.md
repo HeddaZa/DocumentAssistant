@@ -97,7 +97,6 @@ mypy .
 pytest
 ```
 
-See `.github/copilot-instructions.md` for coding standards.
 
 ### Testing
 ```bash
